@@ -4,6 +4,7 @@ import {
   pageLineMarks,
   pageModeClasses,
   paragraphSpan,
+  manuscriptLightClass,
   readingMeasureVars,
 } from "src/view/page-mode";
 
@@ -74,6 +75,13 @@ describe("page mode classes", () => {
         typewriterMode: true,
       })
     ).toEqual(["longform-highlight-line", "longform-typewriter"]);
+  });
+});
+
+describe("manuscript theme", () => {
+  it("uses a light page only when the writer asks for it", () => {
+    expect(manuscriptLightClass(false)).toBeNull();
+    expect(manuscriptLightClass(true)).toBe("longform-manuscript-light");
   });
 });
 

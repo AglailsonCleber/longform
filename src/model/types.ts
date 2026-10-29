@@ -113,6 +113,8 @@ export interface LongformPluginSettings {
   lineHeight: number;
   /** Horizontal padding around the column, in pixels. */
   pageMargin: number;
+  /** Light paper for Longform notes while the rest of the app stays as it is. */
+  lightManuscript: boolean;
   // DEPRECATED. To be removed in future, needed now for migrations.
   projects: {
     [path: string]: {
@@ -149,6 +151,7 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   measureWidth: 66,
   lineHeight: 1.7,
   pageMargin: 32,
+  lightManuscript: false,
   projects: {},
   waitForSync: false,
   fallbackWaitEnabled: true,
@@ -183,6 +186,7 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "measureWidth",
   "lineHeight",
   "pageMargin",
+  "lightManuscript",
 ];
 
 export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
@@ -210,4 +214,5 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "measureWidth",
     "lineHeight",
     "pageMargin",
+    "lightManuscript",
   ];

@@ -54,7 +54,13 @@ import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
 import { longformPageExtension } from "./view/page-mode-extension";
-import { PAGE_MODE_CLASSES, pageModeClasses, READING_MEASURE_PROPERTIES, readingMeasureVars } from "./view/page-mode";
+import {
+  MANUSCRIPT_LIGHT_CLASS,
+  PAGE_MODE_CLASSES,
+  pageModeClasses,
+  READING_MEASURE_PROPERTIES,
+  readingMeasureVars,
+} from "./view/page-mode";
 
 const LONGFORM_LEAF_CLASS = "longform-leaf";
 const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
@@ -65,6 +71,7 @@ const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
   "measureWidth",
   "lineHeight",
   "pageMargin",
+  "lightManuscript",
 ];
 
 // TODO: Try and abstract away more logic from actual plugin hooks here
@@ -193,7 +200,8 @@ export default class LongformPlugin extends Plugin {
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
       leaf.view.containerEl.classList.remove(
         ...PAGE_MODE_CLASSES,
-        "longform-measure"
+        "longform-measure",
+        MANUSCRIPT_LIGHT_CLASS
       );
       for (const name of READING_MEASURE_PROPERTIES) {
         leaf.view.containerEl.style.removeProperty(name);
@@ -555,7 +563,12 @@ export default class LongformPlugin extends Plugin {
             pageClassesChanged = true;
           }
         }
-        const measure = draft ? readingMeasureVars(get(pluginSettings)) : null;
+        const pageSettings = get(pluginSettings);
+        el.classList.toggle(
+          MANUSCRIPT_LIGHT_CLASS,
+          Boolean(draft) && pageSettings.lightManuscript
+        );
+        const measure = draft ? readingMeasureVars(pageSettings) : null;
         el.classList.toggle("longform-measure", Boolean(measure));
         if (measure) {
           for (const [name, value] of Object.entries(measure)) {

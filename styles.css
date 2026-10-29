@@ -52,3 +52,29 @@
 .longform-leaf.longform-measure .markdown-preview-sizer {
   line-height: var(--longform-line-height);
 }
+
+.longform-leaf.longform-manuscript-light,
+.longform-leaf.longform-manuscript-light .view-header,
+.longform-leaf.longform-manuscript-light .markdown-source-view,
+.longform-leaf.longform-manuscript-light .markdown-reading-view,
+.longform-leaf.longform-manuscript-light .cm-editor,
+.longform-leaf.longform-manuscript-light .cm-scroller,
+.longform-leaf.longform-manuscript-light .cm-gutters {
+  --background-primary: #f7f3ea;
+  --background-primary-alt: #f7f3ea;
+  --background-secondary: #efeae0;
+  --background-secondary-alt: #efeae0;
+  --background-modifier-hover: rgba(40, 32, 22, 0.08);
+  --background-modifier-border: #e4dccf;
+  --text-normal: #1c1915;
+  --text-muted: #5c564e;
+  --text-faint: #8a8378;
+  --text-selection: #d9cbb3;
+  color: #1c1915;
+  background-color: #f7f3ea;
+}
+
+.longform-leaf.longform-manuscript-light .view-header-title,
+.longform-leaf.longform-manuscript-light .cm-line {
+  color: #1c1915;
+}

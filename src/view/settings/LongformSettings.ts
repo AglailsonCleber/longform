@@ -181,6 +181,20 @@ export class LongformSettingsTab extends PluginSettingTab {
             }));
           });
       });
+    new Setting(containerEl)
+      .setName("Light manuscript")
+      .setDesc(
+        "Use a light paper page for Longform notes. The rest of Obsidian keeps its current theme."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.lightManuscript);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            lightManuscript: value,
+          }));
+        });
+      });
 
     new Setting(containerEl).setName("Compile").setHeading();
 

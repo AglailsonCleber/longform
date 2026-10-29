@@ -59,6 +59,13 @@ export const READING_MEASURE_PROPERTIES = [
   "--longform-page-margin",
 ] as const;
 
+export const MANUSCRIPT_LIGHT_CLASS = "longform-manuscript-light";
+
+/** Class for a light writing page. The rest of the app keeps its own theme. */
+export function manuscriptLightClass(enabled: boolean): string | null {
+  return enabled ? MANUSCRIPT_LIGHT_CLASS : null;
+}
+
 export function pageModeClasses(settings: PageModeSettings): string[] {
   const classes: string[] = [];
   if (settings.highlightCurrentLine) {
