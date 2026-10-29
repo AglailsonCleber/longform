@@ -23,11 +23,13 @@
   transition: opacity 120ms linear;
 }
 
-.longform-leaf.longform-focus .cm-line.longform-current-paragraph {
+.longform-leaf.longform-focus .cm-line.longform-current-paragraph,
+.longform-leaf.longform-focus .cm-line.longform-current-line {
   opacity: 1;
 }
 
-.longform-leaf.longform-highlight-line .cm-line.longform-current-line {
+.longform-leaf.longform-highlight-line .cm-line.longform-current-line,
+.longform-leaf.longform-focus .cm-line.longform-current-line {
   background-color: var(--background-modifier-hover);
 }
 

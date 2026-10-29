@@ -73,6 +73,7 @@ function shouldCenter(update: ViewUpdate): boolean {
 
 class PageModeController {
   private queued = false;
+  private repaint = 0;
 
   constructor(view: EditorView) {
     paint(view);
@@ -80,9 +81,25 @@ class PageModeController {
 
   update(update: ViewUpdate): void {
     paint(update.view);
+    // Live Preview rebuilds the line after Enter, which drops the class
+    // painted during this update. Paint again once the new line exists.
+    if (update.docChanged || update.selectionSet) {
+      this.repaintAfterLayout(update.view);
+    }
     if (shouldCenter(update)) {
       this.queueCenter(update.view);
     }
+  }
+
+  private repaintAfterLayout(view: EditorView): void {
+    cancelAnimationFrame(this.repaint);
+    this.repaint = requestAnimationFrame(() => {
+      this.repaint = requestAnimationFrame(() => {
+        if (view.dom.isConnected) {
+          paint(view);
+        }
+      });
+    });
   }
 
   private queueCenter(view: EditorView): void {

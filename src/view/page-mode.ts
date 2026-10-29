@@ -73,7 +73,9 @@ export function pageLineMarks(
     const marks: PageLineMark[] = [];
     for (let line = span.from; line <= span.to; line += 1) {
       const classes = ["longform-current-paragraph"];
-      if (mode.highlight && line === index) {
+      // The cursor line stays marked even when Enter has just made it blank,
+      // so the new paragraph does not vanish into the dimmed page.
+      if (line === index) {
         classes.push("longform-current-line");
       }
       marks.push({ line, classes: classes.join(" ") });

@@ -34,6 +34,23 @@ describe("page line marks", () => {
     ]);
   });
 
+  it("keeps a blank line created with Enter in focus", () => {
+    const broken = ["Texto.", ""];
+    expect(
+      pageLineMarks(
+        broken.length,
+        1,
+        { focus: true, highlight: false },
+        (index) => broken[index]
+      )
+    ).toEqual([
+      {
+        line: 1,
+        classes: "longform-current-paragraph longform-current-line",
+      },
+    ]);
+  });
+
   it("marks only the cursor line when focus is off", () => {
     expect(
       pageLineMarks(lines.length, 0, { focus: false, highlight: true }, text)
