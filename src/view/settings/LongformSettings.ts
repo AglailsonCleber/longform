@@ -125,6 +125,62 @@ export class LongformSettingsTab extends PluginSettingTab {
           }));
         });
       });
+    new Setting(containerEl)
+      .setName("Reading measure")
+      .setDesc(
+        "Give a Longform note a column made for long prose. Other notes keep the full width."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.readingMeasure);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            readingMeasure: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Column width")
+      .setDesc("Width of the text, in characters.")
+      .addSlider((cb) => {
+        cb.setLimits(40, 100, 1)
+          .setValue(settings.measureWidth)
+          .setDynamicTooltip()
+          .onChange((value) => {
+            pluginSettings.update((s) => ({
+              ...s,
+              measureWidth: value,
+            }));
+          });
+      });
+    new Setting(containerEl)
+      .setName("Line height")
+      .setDesc("Space between lines. 1.7 is a comfortable default for prose.")
+      .addSlider((cb) => {
+        cb.setLimits(1.2, 2.4, 0.05)
+          .setValue(settings.lineHeight)
+          .setDynamicTooltip()
+          .onChange((value) => {
+            pluginSettings.update((s) => ({
+              ...s,
+              lineHeight: value,
+            }));
+          });
+      });
+    new Setting(containerEl)
+      .setName("Page margin")
+      .setDesc("Horizontal padding around the column, in pixels.")
+      .addSlider((cb) => {
+        cb.setLimits(0, 120, 4)
+          .setValue(settings.pageMargin)
+          .setDynamicTooltip()
+          .onChange((value) => {
+            pluginSettings.update((s) => ({
+              ...s,
+              pageMargin: value,
+            }));
+          });
+      });
 
     new Setting(containerEl).setName("Compile").setHeading();
 

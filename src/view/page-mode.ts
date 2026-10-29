@@ -10,6 +10,55 @@ export type PageModeSettings = {
   typewriterMode: boolean;
 };
 
+export const MEASURE_WIDTH = { min: 40, max: 100, fallback: 66 };
+export const MEASURE_LINE_HEIGHT = { min: 1.2, max: 2.4, fallback: 1.7 };
+export const MEASURE_MARGIN = { min: 0, max: 120, fallback: 32 };
+
+export type ReadingMeasureSettings = {
+  readingMeasure: boolean;
+  measureWidth: number;
+  lineHeight: number;
+  pageMargin: number;
+};
+
+export function clampMeasure(
+  value: number,
+  bounds: { min: number; max: number; fallback: number }
+): number {
+  if (!Number.isFinite(value)) {
+    return bounds.fallback;
+  }
+  return Math.min(bounds.max, Math.max(bounds.min, value));
+}
+
+/** CSS variables for the reading column. Absent when the measure is off. */
+export function readingMeasureVars(
+  settings: ReadingMeasureSettings
+): Record<string, string> | null {
+  if (!settings.readingMeasure) {
+    return null;
+  }
+  return {
+    "--longform-measure-width": `${clampMeasure(
+      settings.measureWidth,
+      MEASURE_WIDTH
+    )}ch`,
+    "--longform-line-height": String(
+      clampMeasure(settings.lineHeight, MEASURE_LINE_HEIGHT)
+    ),
+    "--longform-page-margin": `${clampMeasure(
+      settings.pageMargin,
+      MEASURE_MARGIN
+    )}px`,
+  };
+}
+
+export const READING_MEASURE_PROPERTIES = [
+  "--longform-measure-width",
+  "--longform-line-height",
+  "--longform-page-margin",
+] as const;
+
 export function pageModeClasses(settings: PageModeSettings): string[] {
   const classes: string[] = [];
   if (settings.highlightCurrentLine) {

@@ -54,13 +54,17 @@ import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
 import { longformPageExtension } from "./view/page-mode-extension";
-import { PAGE_MODE_CLASSES, pageModeClasses } from "./view/page-mode";
+import { PAGE_MODE_CLASSES, pageModeClasses, READING_MEASURE_PROPERTIES, readingMeasureVars } from "./view/page-mode";
 
 const LONGFORM_LEAF_CLASS = "longform-leaf";
 const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
   "highlightCurrentLine",
   "focusMode",
   "typewriterMode",
+  "readingMeasure",
+  "measureWidth",
+  "lineHeight",
+  "pageMargin",
 ];
 
 // TODO: Try and abstract away more logic from actual plugin hooks here
@@ -187,7 +191,13 @@ export default class LongformPlugin extends Plugin {
 
   onunload(): void {
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
-      leaf.view.containerEl.classList.remove(...PAGE_MODE_CLASSES);
+      leaf.view.containerEl.classList.remove(
+        ...PAGE_MODE_CLASSES,
+        "longform-measure"
+      );
+      for (const name of READING_MEASURE_PROPERTIES) {
+        leaf.view.containerEl.style.removeProperty(name);
+      }
     });
     this.userScriptObserver.destroy();
     this.storeVaultSync.destroy();
@@ -543,6 +553,17 @@ export default class LongformPlugin extends Plugin {
           if (el.classList.contains(cls) !== want) {
             el.classList.toggle(cls, want);
             pageClassesChanged = true;
+          }
+        }
+        const measure = draft ? readingMeasureVars(get(pluginSettings)) : null;
+        el.classList.toggle("longform-measure", Boolean(measure));
+        if (measure) {
+          for (const [name, value] of Object.entries(measure)) {
+            el.style.setProperty(name, value);
+          }
+        } else {
+          for (const name of READING_MEASURE_PROPERTIES) {
+            el.style.removeProperty(name);
           }
         }
       }

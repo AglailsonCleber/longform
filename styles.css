@@ -37,3 +37,18 @@
   padding-top: 38vh;
   padding-bottom: 42vh;
 }
+
+.longform-leaf.longform-measure .cm-sizer,
+.longform-leaf.longform-measure .markdown-preview-sizer {
+  box-sizing: border-box;
+  max-width: calc(
+    var(--longform-measure-width) + (var(--longform-page-margin) * 2)
+  );
+  margin-inline: auto;
+  padding-inline: var(--longform-page-margin);
+}
+
+.longform-leaf.longform-measure .cm-line,
+.longform-leaf.longform-measure .markdown-preview-sizer {
+  line-height: var(--longform-line-height);
+}

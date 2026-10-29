@@ -4,6 +4,7 @@ import {
   pageLineMarks,
   pageModeClasses,
   paragraphSpan,
+  readingMeasureVars,
 } from "src/view/page-mode";
 
 const lines = ["Um", "Dois", "", "Três", "Quatro"];
@@ -73,5 +74,33 @@ describe("page mode classes", () => {
         typewriterMode: true,
       })
     ).toEqual(["longform-highlight-line", "longform-typewriter"]);
+  });
+});
+
+describe("reading measure", () => {
+  it("stays off until the writer turns it on", () => {
+    expect(
+      readingMeasureVars({
+        readingMeasure: false,
+        measureWidth: 66,
+        lineHeight: 1.7,
+        pageMargin: 32,
+      })
+    ).toBeNull();
+  });
+
+  it("clamps width, leading, and margin into a readable column", () => {
+    expect(
+      readingMeasureVars({
+        readingMeasure: true,
+        measureWidth: 1000,
+        lineHeight: 0,
+        pageMargin: Number.NaN,
+      })
+    ).toEqual({
+      "--longform-measure-width": "100ch",
+      "--longform-line-height": "1.2",
+      "--longform-page-margin": "32px",
+    });
   });
 });

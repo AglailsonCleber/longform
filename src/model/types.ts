@@ -105,6 +105,14 @@ export interface LongformPluginSettings {
   focusMode: boolean;
   /** Keep the cursor line vertically centered. */
   typewriterMode: boolean;
+  /** Narrow the writing column to a readable measure. */
+  readingMeasure: boolean;
+  /** Column width in characters. */
+  measureWidth: number;
+  /** Line height as a unitless multiplier. */
+  lineHeight: number;
+  /** Horizontal padding around the column, in pixels. */
+  pageMargin: number;
   // DEPRECATED. To be removed in future, needed now for migrations.
   projects: {
     [path: string]: {
@@ -137,6 +145,10 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   highlightCurrentLine: false,
   focusMode: false,
   typewriterMode: false,
+  readingMeasure: false,
+  measureWidth: 66,
+  lineHeight: 1.7,
+  pageMargin: 32,
   projects: {},
   waitForSync: false,
   fallbackWaitEnabled: true,
@@ -167,6 +179,10 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "highlightCurrentLine",
   "focusMode",
   "typewriterMode",
+  "readingMeasure",
+  "measureWidth",
+  "lineHeight",
+  "pageMargin",
 ];
 
 export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
@@ -190,4 +206,8 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "highlightCurrentLine",
     "focusMode",
     "typewriterMode",
+    "readingMeasure",
+    "measureWidth",
+    "lineHeight",
+    "pageMargin",
   ];
