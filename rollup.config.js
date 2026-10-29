@@ -33,7 +33,7 @@ const getPlugins = (...plugins) =>
 
 const BASE_CONFIG = {
   input: "src/main.ts",
-  external: ["obsidian"],
+  external: ["obsidian", "@codemirror/state", "@codemirror/view"],
 };
 
 const DEV_PLUGIN_CONFIG = {

@@ -17,3 +17,21 @@
   margin-left: var(--size-4-2);
   color: var(--text-muted);
 }
+
+.longform-leaf.longform-focus .cm-line {
+  opacity: 0.28;
+  transition: opacity 120ms linear;
+}
+
+.longform-leaf.longform-focus .cm-line.longform-current-paragraph {
+  opacity: 1;
+}
+
+.longform-leaf.longform-highlight-line .cm-line.longform-current-line {
+  background-color: var(--background-modifier-hover);
+}
+
+.longform-leaf.longform-typewriter .markdown-source-view.mod-cm6 .cm-content {
+  padding-top: 38vh;
+  padding-bottom: 42vh;
+}

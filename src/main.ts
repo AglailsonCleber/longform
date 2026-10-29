@@ -2,6 +2,7 @@ import {
   Plugin,
   WorkspaceLeaf,
   FileView,
+  MarkdownView,
   addIcon,
   Notice,
   TAbstractFile,
@@ -52,8 +53,15 @@ import { draftForPath } from "./model/scene-navigation";
 import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
+import { longformPageExtension } from "./view/page-mode-extension";
+import { PAGE_MODE_CLASSES, pageModeClasses } from "./view/page-mode";
 
 const LONGFORM_LEAF_CLASS = "longform-leaf";
+const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
+  "highlightCurrentLine",
+  "focusMode",
+  "typewriterMode",
+];
 
 // TODO: Try and abstract away more logic from actual plugin hooks here
 
@@ -122,6 +130,13 @@ export default class LongformPlugin extends Plugin {
         shouldSave = true;
       }
 
+      if (
+        this.cachedSettings &&
+        changeInKeys(this.cachedSettings, value, PAGE_SETTING_KEYS)
+      ) {
+        this.styleLongformLeaves();
+      }
+
       this.cachedSettings = value;
 
       if (shouldSave) {
@@ -155,6 +170,7 @@ export default class LongformPlugin extends Plugin {
     );
 
     addCommands(this);
+    this.registerEditorExtension(longformPageExtension);
 
     // Dynamically style longform scenes
     this.registerEvent(
@@ -170,6 +186,9 @@ export default class LongformPlugin extends Plugin {
   }
 
   onunload(): void {
+    this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
+      leaf.view.containerEl.classList.remove(...PAGE_MODE_CLASSES);
+    });
     this.userScriptObserver.destroy();
     this.storeVaultSync.destroy();
     this.unsubscribeSettings();
@@ -508,14 +527,33 @@ export default class LongformPlugin extends Plugin {
   }
 
   private styleLongformLeaves(allDrafts: Draft[] = get(drafts)) {
+    const modes = pageModeClasses(get(pluginSettings));
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
-      if (leaf.view instanceof FileView) {
+      const el = leaf.view.containerEl;
+      let pageClassesChanged = false;
+      if (leaf.view instanceof FileView && leaf.view.file) {
         const draft = draftForPath(leaf.view.file.path, allDrafts);
         if (draft) {
-          leaf.view.containerEl.classList.add(LONGFORM_LEAF_CLASS);
+          el.classList.add(LONGFORM_LEAF_CLASS);
         } else {
-          leaf.view.containerEl.classList.remove(LONGFORM_LEAF_CLASS);
+          el.classList.remove(LONGFORM_LEAF_CLASS);
         }
+        for (const cls of PAGE_MODE_CLASSES) {
+          const want = Boolean(draft) && modes.includes(cls);
+          if (el.classList.contains(cls) !== want) {
+            el.classList.toggle(cls, want);
+            pageClassesChanged = true;
+          }
+        }
+      }
+
+      if (pageClassesChanged && leaf.view instanceof MarkdownView) {
+        const editor = leaf.view.editor as {
+          cm?: { dispatch: (spec: { userEvent: string }) => void };
+        };
+        window.requestAnimationFrame(() => {
+          editor.cm?.dispatch({ userEvent: "longform.page" });
+        });
       }
 
       // @ts-ignore

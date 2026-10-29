@@ -99,6 +99,12 @@ export interface LongformPluginSettings {
   fallbackWaitEnabled: boolean;
   fallbackWaitTime: number;
   writeProperty: boolean;
+  /** Accent the cursor line in Longform notes. */
+  highlightCurrentLine: boolean;
+  /** Dim every paragraph except the one being written. */
+  focusMode: boolean;
+  /** Keep the cursor line vertically centered. */
+  typewriterMode: boolean;
   // DEPRECATED. To be removed in future, needed now for migrations.
   projects: {
     [path: string]: {
@@ -128,6 +134,9 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   numberScenes: false,
   sceneTemplate: null,
   writeProperty: false,
+  highlightCurrentLine: false,
+  focusMode: false,
+  typewriterMode: false,
   projects: {},
   waitForSync: false,
   fallbackWaitEnabled: true,
@@ -155,6 +164,9 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "fallbackWaitEnabled",
   "fallbackWaitTime",
   "writeProperty",
+  "highlightCurrentLine",
+  "focusMode",
+  "typewriterMode",
 ];
 
 export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
@@ -175,4 +187,7 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "fallbackWaitEnabled",
     "fallbackWaitTime",
     "writeProperty",
+    "highlightCurrentLine",
+    "focusMode",
+    "typewriterMode",
   ];

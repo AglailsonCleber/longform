@@ -84,6 +84,48 @@ export class LongformSettingsTab extends PluginSettingTab {
         });
       });
 
+    new Setting(containerEl).setName("Page").setHeading();
+    new Setting(containerEl)
+      .setName("Highlight current line")
+      .setDesc("In a Longform note, tint the line the cursor is on.")
+      .addToggle((cb) => {
+        cb.setValue(settings.highlightCurrentLine);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            highlightCurrentLine: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Focus mode")
+      .setDesc(
+        "Dim every paragraph except the one you are writing. A blank line marks the edge of the paragraph."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.focusMode);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            focusMode: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Typewriter mode")
+      .setDesc(
+        "Keep the cursor line centered while you write in a Longform note."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.typewriterMode);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            typewriterMode: value,
+          }));
+        });
+      });
+
     new Setting(containerEl).setName("Compile").setHeading();
 
     new Setting(containerEl)
