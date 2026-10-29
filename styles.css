@@ -78,3 +78,29 @@
 .longform-leaf.longform-manuscript-light .cm-line {
   color: #1c1915;
 }
+
+.longform-leaf.longform-manuscript-dark,
+.longform-leaf.longform-manuscript-dark .view-header,
+.longform-leaf.longform-manuscript-dark .markdown-source-view,
+.longform-leaf.longform-manuscript-dark .markdown-reading-view,
+.longform-leaf.longform-manuscript-dark .cm-editor,
+.longform-leaf.longform-manuscript-dark .cm-scroller,
+.longform-leaf.longform-manuscript-dark .cm-gutters {
+  --background-primary: #1c1915;
+  --background-primary-alt: #1c1915;
+  --background-secondary: #26221c;
+  --background-secondary-alt: #26221c;
+  --background-modifier-hover: rgba(247, 243, 234, 0.08);
+  --background-modifier-border: #3a342c;
+  --text-normal: #f7f3ea;
+  --text-muted: #c4b8a8;
+  --text-faint: #8a8378;
+  --text-selection: #4a4036;
+  color: #f7f3ea;
+  background-color: #1c1915;
+}
+
+.longform-leaf.longform-manuscript-dark .view-header-title,
+.longform-leaf.longform-manuscript-dark .cm-line {
+  color: #f7f3ea;
+}

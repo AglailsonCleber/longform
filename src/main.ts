@@ -55,8 +55,11 @@ import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
 import { longformPageExtension } from "./view/page-mode-extension";
 import {
+  MANUSCRIPT_DARK_CLASS,
   MANUSCRIPT_LIGHT_CLASS,
   PAGE_MODE_CLASSES,
+  appColorScheme,
+  manuscriptContrastClass,
   pageModeClasses,
   READING_MEASURE_PROPERTIES,
   readingMeasureVars,
@@ -189,6 +192,11 @@ export default class LongformPlugin extends Plugin {
         this.styleLongformLeaves();
       })
     );
+    this.registerEvent(
+      this.app.workspace.on("css-change", () => {
+        this.styleLongformLeaves();
+      })
+    );
     this.unsubscribeDrafts = drafts.subscribe((allDrafts) => {
       this.styleLongformLeaves(allDrafts);
     });
@@ -201,7 +209,8 @@ export default class LongformPlugin extends Plugin {
       leaf.view.containerEl.classList.remove(
         ...PAGE_MODE_CLASSES,
         "longform-measure",
-        MANUSCRIPT_LIGHT_CLASS
+        MANUSCRIPT_LIGHT_CLASS,
+        MANUSCRIPT_DARK_CLASS
       );
       for (const name of READING_MEASURE_PROPERTIES) {
         leaf.view.containerEl.style.removeProperty(name);
@@ -564,9 +573,17 @@ export default class LongformPlugin extends Plugin {
           }
         }
         const pageSettings = get(pluginSettings);
+        const contrast = manuscriptContrastClass(
+          Boolean(draft) && pageSettings.lightManuscript,
+          appColorScheme(el.ownerDocument.body.classList)
+        );
         el.classList.toggle(
           MANUSCRIPT_LIGHT_CLASS,
-          Boolean(draft) && pageSettings.lightManuscript
+          contrast === MANUSCRIPT_LIGHT_CLASS
+        );
+        el.classList.toggle(
+          MANUSCRIPT_DARK_CLASS,
+          contrast === MANUSCRIPT_DARK_CLASS
         );
         const measure = draft ? readingMeasureVars(pageSettings) : null;
         el.classList.toggle("longform-measure", Boolean(measure));

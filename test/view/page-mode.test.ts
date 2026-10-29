@@ -4,7 +4,7 @@ import {
   pageLineMarks,
   pageModeClasses,
   paragraphSpan,
-  manuscriptLightClass,
+  manuscriptContrastClass,
   readingMeasureVars,
 } from "src/view/page-mode";
 
@@ -79,9 +79,18 @@ describe("page mode classes", () => {
 });
 
 describe("manuscript theme", () => {
-  it("uses a light page only when the writer asks for it", () => {
-    expect(manuscriptLightClass(false)).toBeNull();
-    expect(manuscriptLightClass(true)).toBe("longform-manuscript-light");
+  it("stays off until the writer asks for the opposite page", () => {
+    expect(manuscriptContrastClass(false, "dark")).toBeNull();
+    expect(manuscriptContrastClass(false, "light")).toBeNull();
+  });
+
+  it("uses the opposite of the app theme", () => {
+    expect(manuscriptContrastClass(true, "dark")).toBe(
+      "longform-manuscript-light"
+    );
+    expect(manuscriptContrastClass(true, "light")).toBe(
+      "longform-manuscript-dark"
+    );
   });
 });
 

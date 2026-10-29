@@ -182,9 +182,9 @@ export class LongformSettingsTab extends PluginSettingTab {
           });
       });
     new Setting(containerEl)
-      .setName("Light manuscript")
+      .setName("Opposite theme")
       .setDesc(
-        "Use a light paper page for Longform notes. The rest of Obsidian keeps its current theme."
+        "Longform notes use the opposite of Obsidian's theme: a light page when the app is dark, and a dark page when the app is light."
       )
       .addToggle((cb) => {
         cb.setValue(settings.lightManuscript);

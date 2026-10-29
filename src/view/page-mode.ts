@@ -60,10 +60,29 @@ export const READING_MEASURE_PROPERTIES = [
 ] as const;
 
 export const MANUSCRIPT_LIGHT_CLASS = "longform-manuscript-light";
+export const MANUSCRIPT_DARK_CLASS = "longform-manuscript-dark";
 
-/** Class for a light writing page. The rest of the app keeps its own theme. */
-export function manuscriptLightClass(enabled: boolean): string | null {
-  return enabled ? MANUSCRIPT_LIGHT_CLASS : null;
+export type AppColorScheme = "light" | "dark";
+
+/** Obsidian marks the document with `theme-light` or `theme-dark`. */
+export function appColorScheme(classList: {
+  contains(token: string): boolean;
+}): AppColorScheme {
+  return classList.contains("theme-light") ? "light" : "dark";
+}
+
+/**
+ * Class for a writing page that inverts the app theme.
+ * A dark app gets a light page, and a light app gets a dark page.
+ */
+export function manuscriptContrastClass(
+  enabled: boolean,
+  scheme: AppColorScheme
+): string | null {
+  if (!enabled) {
+    return null;
+  }
+  return scheme === "dark" ? MANUSCRIPT_LIGHT_CLASS : MANUSCRIPT_DARK_CLASS;
 }
 
 export function pageModeClasses(settings: PageModeSettings): string[] {

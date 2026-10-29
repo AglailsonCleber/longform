@@ -113,7 +113,7 @@ export interface LongformPluginSettings {
   lineHeight: number;
   /** Horizontal padding around the column, in pixels. */
   pageMargin: number;
-  /** Light paper for Longform notes while the rest of the app stays as it is. */
+  /** Longform notes use the opposite of Obsidian's current theme. */
   lightManuscript: boolean;
   // DEPRECATED. To be removed in future, needed now for migrations.
   projects: {
