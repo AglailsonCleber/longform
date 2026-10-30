@@ -4,6 +4,7 @@ import { get } from "svelte/store";
 import {
   applySpan,
   dialogueDashEdit,
+  hyphenEdit,
   quotedText,
 } from "src/model/portuguese";
 import { draftForPath } from "src/model/scene-navigation";
@@ -23,6 +24,14 @@ export function insertDialogueDashInto(editor: Editor): void {
   const cursor = editor.getCursor();
   const line = editor.getLine(cursor.line);
   const edit = dialogueDashEdit(line, cursor.ch);
+  editor.setLine(cursor.line, applySpan(line, edit));
+  editor.setCursor({ line: cursor.line, ch: edit.cursor });
+}
+
+export function insertHyphenInto(editor: Editor): void {
+  const cursor = editor.getCursor();
+  const line = editor.getLine(cursor.line);
+  const edit = hyphenEdit(line, cursor.ch);
   editor.setLine(cursor.line, applySpan(line, edit));
   editor.setCursor({ line: cursor.line, ch: edit.cursor });
 }
@@ -53,6 +62,21 @@ export const insertDialogueDash: CommandBuilder = () => ({
       return true;
     }
     insertDialogueDashInto(editor);
+  },
+});
+
+export const insertHyphen: CommandBuilder = () => ({
+  id: "longform-insert-hyphen",
+  name: "Insert hyphen",
+  icon: "minus",
+  editorCheckCallback(checking, editor, view) {
+    if (!isLongformFile(view)) {
+      return false;
+    }
+    if (checking) {
+      return true;
+    }
+    insertHyphenInto(editor);
   },
 });
 

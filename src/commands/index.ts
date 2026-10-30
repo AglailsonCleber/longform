@@ -24,7 +24,8 @@ import {
   showPrivateComments,
 } from "./margin-note";
 import { insertMissingWord } from "./missing-word";
-import { insertDialogueDash, insertQuotes } from "./portuguese";
+import { insertDialogueDash, insertHyphen, insertQuotes } from "./portuguese";
+import { openBesidePage, restoreRecoveredPage } from "./page-beside";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -68,7 +69,10 @@ const commandBuilders = [
   showPrivateComments,
   insertMissingWord,
   insertDialogueDash,
+  insertHyphen,
   insertQuotes,
+  openBesidePage,
+  restoreRecoveredPage,
   readAloud,
   stopReading,
   setProseForm,

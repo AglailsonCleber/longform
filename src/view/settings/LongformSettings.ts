@@ -198,7 +198,7 @@ export class LongformSettingsTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Portuguese page")
       .setDesc(
-        "Mark a Longform note as Portuguese (pt-BR) so the spell checker can use that dictionary. The dashes and quotes themselves are in the Private comments pane."
+        "Mark a Longform note as Portuguese (pt-BR) and ask the spell checker for a Portuguese dictionary when one is installed. Dashes, the hyphen, and quotes are on the writing bar."
       )
       .addToggle((cb) => {
         cb.setValue(settings.portuguesePage);

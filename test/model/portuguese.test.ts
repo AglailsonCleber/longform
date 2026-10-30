@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   applySpan,
   dialogueDashEdit,
+  hyphenEdit,
   quotedText,
 } from "src/model/portuguese";
 
@@ -29,6 +30,18 @@ describe("dialogue dash", () => {
     const line = "ela disse";
     const edit = dialogueDashEdit(line, 3);
     expect(applySpan(line, edit)).toBe("ela — disse");
+  });
+});
+
+describe("hyphen", () => {
+  it("joins the words on either side of the cursor", () => {
+    const line = "bem vindo";
+    expect(applySpan(line, hyphenEdit(line, 3))).toBe("bem-vindo");
+  });
+
+  it("inserts a hyphen inside a word", () => {
+    const line = "bemvindo";
+    expect(applySpan(line, hyphenEdit(line, 3))).toBe("bem-vindo");
   });
 });
 

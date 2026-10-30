@@ -6,6 +6,7 @@ import {
   addIcon,
   Notice,
   TAbstractFile,
+  TFile,
   TFolder,
   normalizePath,
 } from "obsidian";
@@ -53,6 +54,7 @@ import {
 } from "./model/stores";
 import { addCommands } from "./commands";
 import { determineMigrationStatus } from "./model/migration";
+import { applyPortugueseSpellcheck } from "./model/spellcheck";
 import {
   PAGE_FORM_CLASSES,
   PAGE_FORM_KEY,
@@ -65,6 +67,8 @@ import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
+import { PageRecovery } from "./view/page-recovery";
+import { syncWritingBar } from "./view/writing-bar";
 import { longformPageExtension } from "./view/page-mode-extension";
 import {
   MANUSCRIPT_DARK_CLASS,
@@ -93,6 +97,7 @@ const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
 // TODO: Try and abstract away more logic from actual plugin hooks here
 
 export default class LongformPlugin extends Plugin {
+  pageRecovery!: PageRecovery;
   // Local mirror of the pluginSettings store
   // since this class does a lot of ad-hoc settings fetching.
   // More efficient than a lot of get() calls.
@@ -167,6 +172,12 @@ export default class LongformPlugin extends Plugin {
       ) {
         this.styleLongformLeaves();
       }
+      if (
+        !this.cachedSettings ||
+        this.cachedSettings.portuguesePage !== value.portuguesePage
+      ) {
+        applyPortugueseSpellcheck(value.portuguesePage);
+      }
 
       this.cachedSettings = value;
 
@@ -186,6 +197,7 @@ export default class LongformPlugin extends Plugin {
     activeFile.set(this.app.workspace.getActiveFile());
     this.registerEvent(
       this.app.workspace.on("active-leaf-change", (leaf) => {
+        this.queuePageStyle();
         if (leaf.view instanceof FileView) {
           activeFile.set(leaf.view.file);
         }
@@ -200,6 +212,8 @@ export default class LongformPlugin extends Plugin {
       })
     );
 
+    this.pageRecovery = new PageRecovery(this.app);
+
     addCommands(this);
     this.registerEditorExtension(longformPageExtension);
     this.registerEditorExtension(longformMarginNoteExtension);
@@ -208,7 +222,7 @@ export default class LongformPlugin extends Plugin {
     // Dynamically style longform scenes
     this.registerEvent(
       this.app.workspace.on("layout-change", () => {
-        this.styleLongformLeaves();
+        this.queuePageStyle();
       })
     );
     this.registerEvent(
@@ -224,12 +238,42 @@ export default class LongformPlugin extends Plugin {
     this.unsubscribeDrafts = drafts.subscribe((allDrafts) => {
       this.styleLongformLeaves(allDrafts);
     });
+    this.registerEvent(
+      this.app.workspace.on("editor-change", (editor, info) => {
+        const file = info.file;
+        if (!file || !draftForPath(file.path, get(drafts))) {
+          return;
+        }
+        this.pageRecovery.note(file.path, editor.getValue());
+      })
+    );
+    this.registerEvent(
+      this.app.workspace.on("file-open", (file) => {
+        this.queuePageStyle();
+        if (!(file instanceof TFile) || !draftForPath(file.path, get(drafts))) {
+          return;
+        }
+        void this.pageRecovery.offer(file);
+      })
+    );
+    this.registerEvent(
+      this.app.vault.on("rename", (file, oldPath) => {
+        this.pageRecovery.rename(oldPath, file.path);
+      })
+    );
+    this.registerEvent(
+      this.app.vault.on("delete", (file) => {
+        this.pageRecovery.forget(file.path);
+      })
+    );
 
     this.api = new LongformAPI();
   }
 
   onunload(): void {
+    this.pageRecovery?.flush();
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
+      leaf.view.containerEl.querySelector(":scope > .longform-writing-bar")?.remove();
       leaf.view.containerEl.classList.remove(
         ...PAGE_MODE_CLASSES,
         ...PAGE_FORM_CLASSES,
@@ -608,6 +652,15 @@ export default class LongformPlugin extends Plugin {
     );
   }
 
+  private queuePageStyle(): void {
+    this.styleLongformLeaves();
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        this.styleLongformLeaves();
+      });
+    });
+  }
+
   private styleLongformLeaves(allDrafts: Draft[] = get(drafts)) {
     const modes = pageModeClasses(get(pluginSettings));
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
@@ -670,6 +723,11 @@ export default class LongformPlugin extends Plugin {
             el.style.removeProperty(name);
           }
         }
+        syncWritingBar(
+          el,
+          leaf.view instanceof MarkdownView ? leaf.view : null,
+          Boolean(draft)
+        );
       }
 
       if (pageClassesChanged && leaf.view instanceof MarkdownView) {

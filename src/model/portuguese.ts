@@ -40,6 +40,20 @@ export function dialogueDashEdit(line: string, ch: number): SpanEdit {
   return { from: ch, to: ch, text, cursor: ch + text.length };
 }
 
+/**
+ * A hyphen joins words. A space on either side of the cursor is removed
+ * so `bem vindo` becomes `bem-vindo` instead of a dash.
+ */
+export function hyphenEdit(line: string, ch: number): SpanEdit {
+  const before = line.slice(0, ch);
+  const after = line.slice(ch);
+  const leftSpace = /[ \t]$/.test(before);
+  const rightSpace = /^[ \t]/.test(after);
+  const from = leftSpace ? ch - 1 : ch;
+  const to = rightSpace ? ch + 1 : ch;
+  return { from, to, text: "-", cursor: from + 1 };
+}
+
 export function applySpan(line: string, edit: SpanEdit): string {
   return line.slice(0, edit.from) + edit.text + line.slice(edit.to);
 }

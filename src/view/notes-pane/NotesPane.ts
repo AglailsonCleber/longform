@@ -7,7 +7,8 @@ import {
   type MarginNoteHit,
 } from "src/model/margin-note";
 import { insertMissingWordInto } from "src/commands/missing-word";
-import { insertDialogueDashInto, insertQuotesInto } from "src/commands/portuguese";
+import { besideTargets } from "src/model/page-beside";
+import { insertDialogueDashInto, insertHyphenInto, insertQuotesInto } from "src/commands/portuguese";
 import { missingWordsInDocument } from "src/model/missing-word";
 import {
   insertCharacterCue,
@@ -22,6 +23,8 @@ import type { PageForm } from "src/model/page-form";
 import { draftForPath, scenePath } from "src/model/scene-navigation";
 import { drafts, selectedDraft } from "src/model/stores";
 import type { Draft } from "src/model/types";
+import { BesideModal } from "src/view/BesideModal";
+import { openNoteBeside } from "src/view/open-beside";
 import { activeFile } from "src/view/stores";
 import { get, type Unsubscriber } from "svelte/store";
 
@@ -75,8 +78,12 @@ export class NotesPane extends ItemView {
         onCharacter: () => this.editNote(insertCharacterCue),
         onParenthetical: () => this.editNote(insertParenthetical),
         onDash: () => this.editNote(insertDialogueDashInto),
+        onHyphen: () => this.editNote(insertHyphenInto),
         onQuotes: () => this.editNote(insertQuotesInto),
         onMissing: () => this.editNote(insertMissingWordInto),
+        onBeside: () => {
+          this.openBeside();
+        },
       },
     });
 
@@ -212,6 +219,23 @@ export class NotesPane extends ItemView {
       return;
     }
     await setNoteForm(this.app, file, form);
+  }
+
+  private openBeside(): void {
+    const file = this.openFile();
+    if (!file) {
+      return;
+    }
+    const all = get(drafts);
+    const current = draftForPath(file.path, all);
+    if (!current) {
+      return;
+    }
+    const project = all.filter((draft) => draft.title === current.title);
+    const targets = besideTargets(file.path, current, file.basename, project);
+    new BesideModal(this.app, targets, (target) => {
+      void openNoteBeside(this.app, target.path);
+    }).open();
   }
 
   private editNote(edit: (editor: MarkdownView["editor"]) => void): void {
