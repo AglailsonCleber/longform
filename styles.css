@@ -113,6 +113,11 @@
   margin-right: 14rem;
 }
 
+.longform-leaf .longform-missing-word {
+  background-color: var(--text-selection);
+  border-radius: 0.2em;
+}
+
 .longform-leaf .longform-margin-syntax {
   font-size: 0;
 }

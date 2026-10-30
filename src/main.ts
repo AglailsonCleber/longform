@@ -58,6 +58,7 @@ import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
+import { longformMissingWordExtension } from "./view/missing-word-extension";
 import { longformPageExtension } from "./view/page-mode-extension";
 import {
   MANUSCRIPT_DARK_CLASS,
@@ -195,6 +196,7 @@ export default class LongformPlugin extends Plugin {
     addCommands(this);
     this.registerEditorExtension(longformPageExtension);
     this.registerEditorExtension(longformMarginNoteExtension);
+    this.registerEditorExtension(longformMissingWordExtension);
 
     // Dynamically style longform scenes
     this.registerEvent(

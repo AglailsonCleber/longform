@@ -2,6 +2,7 @@
   import type { PrivateComment } from "./NotesPane";
 
   export let comments: PrivateComment[] = [];
+  export let missingWords: PrivateComment[] = [];
   export let project = "";
   export let onOpen: (comment: PrivateComment) => void = () => {};
 
@@ -28,23 +29,41 @@
   </p>
   {#if !project}
     <p class="longform-notes-empty">Open a Longform note.</p>
-  {:else if comments.length === 0}
-    <p class="longform-notes-empty">{project} has no private comments.</p>
   {:else}
-    {#each groups as group (group.path)}
-      <h4>{group.title}</h4>
+    {#if comments.length === 0}
+      <p class="longform-notes-empty">None in {project}.</p>
+    {:else}
+      {#each groups as group (group.path)}
+        <h4>{group.title}</h4>
+        <div class="longform-notes-list">
+          {#each group.comments as comment, index (`${comment.line}:${comment.ch}:${index}`)}
+            <button
+              type="button"
+              class="longform-notes-item"
+              on:click={() => onOpen(comment)}
+            >
+              {comment.text.length > 0 ? comment.text : "(empty)"}
+            </button>
+          {/each}
+        </div>
+      {/each}
+    {/if}
+    <h4>Missing words</h4>
+    {#if missingWords.length === 0}
+      <p class="longform-notes-empty">No TK in {project}.</p>
+    {:else}
       <div class="longform-notes-list">
-        {#each group.comments as comment, index (`${comment.line}:${comment.ch}:${index}`)}
+        {#each missingWords as word, index (`${word.path}:${word.line}:${word.ch}:${index}`)}
           <button
             type="button"
             class="longform-notes-item"
-            on:click={() => onOpen(comment)}
+            on:click={() => onOpen(word)}
           >
-            {comment.text.length > 0 ? comment.text : "(empty)"}
+            {word.text}
           </button>
         {/each}
       </div>
-    {/each}
+    {/if}
   {/if}
 </div>
 

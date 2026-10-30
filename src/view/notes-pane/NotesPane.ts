@@ -6,6 +6,7 @@ import {
   marginNotesInLine,
   type MarginNoteHit,
 } from "src/model/margin-note";
+import { missingWordsInDocument } from "src/model/missing-word";
 import { draftForPath, scenePath } from "src/model/scene-navigation";
 import { drafts, selectedDraft } from "src/model/stores";
 import type { Draft } from "src/model/types";
@@ -48,9 +49,10 @@ export class NotesPane extends ItemView {
       target: this.contentEl,
       props: {
         comments: [] as PrivateComment[],
+        missingWords: [] as PrivateComment[],
         project: "",
         onOpen: (comment: PrivateComment) => {
-          void this.openComment(comment);
+          void this.openPlace(comment);
         },
       },
     });
@@ -97,7 +99,7 @@ export class NotesPane extends ItemView {
     const generation = ++this.generation;
     const draft = this.currentDraft();
     if (!draft || !this.pane) {
-      this.pane?.$set({ comments: [], project: "" });
+      this.pane?.$set({ comments: [], missingWords: [], project: "" });
       return;
     }
 
@@ -109,6 +111,7 @@ export class NotesPane extends ItemView {
           );
 
     const comments: PrivateComment[] = [];
+    const missingWords: PrivateComment[] = [];
     for (const path of paths) {
       const file = this.app.vault.getAbstractFileByPath(path);
       if (!(file instanceof TFile)) {
@@ -131,15 +134,24 @@ export class NotesPane extends ItemView {
           text: note.text,
         });
       }
+      for (const word of missingWordsInDocument(text)) {
+        missingWords.push({
+          path,
+          title: file.basename,
+          line: word.line,
+          ch: word.ch,
+          text: word.text,
+        });
+      }
     }
 
     if (generation !== this.generation || !this.pane) {
       return;
     }
-    this.pane.$set({ comments, project: draft.title });
+    this.pane.$set({ comments, missingWords, project: draft.title });
   }
 
-  private async openComment(comment: PrivateComment): Promise<void> {
+  private async openPlace(comment: PrivateComment): Promise<void> {
     const file = this.app.vault.getAbstractFileByPath(comment.path);
     if (!(file instanceof TFile)) {
       return;

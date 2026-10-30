@@ -23,6 +23,7 @@ import {
   listMarginNotes,
   showPrivateComments,
 } from "./margin-note";
+import { insertMissingWord } from "./missing-word";
 import {
   toggleFocusMode,
   toggleHighlightCurrentLine,
@@ -53,6 +54,7 @@ const commandBuilders = [
   insertMarginNote,
   listMarginNotes,
   showPrivateComments,
+  insertMissingWord,
 ];
 
 export function addCommands(plugin: LongformPlugin) {
