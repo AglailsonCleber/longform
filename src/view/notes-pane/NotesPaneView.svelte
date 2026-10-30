@@ -1,10 +1,26 @@
 <script lang="ts">
+  import { PAGE_FORMS } from "src/model/page-form";
+  import type { PageForm } from "src/model/page-form";
+
   import type { PrivateComment } from "./NotesPane";
 
   export let comments: PrivateComment[] = [];
   export let missingWords: PrivateComment[] = [];
   export let project = "";
+  export let form: PageForm = "prose";
   export let onOpen: (comment: PrivateComment) => void = () => {};
+  export let onForm: (form: PageForm) => void = () => {};
+  export let onStanza: () => void = () => {};
+  export let onScene: () => void = () => {};
+  export let onCharacter: () => void = () => {};
+  export let onParenthetical: () => void = () => {};
+
+  const formLabel: Record<PageForm, string> = {
+    prose: "Prose",
+    verse: "Verse",
+    column: "Column",
+    script: "Script",
+  };
 
   $: groups = comments.reduce((list, comment) => {
     const found = list.find((group) => group.path === comment.path);
@@ -22,6 +38,44 @@
 </script>
 
 <div class="longform-notes-pane">
+  <h3>Page form</h3>
+  {#if !project}
+    <p class="longform-notes-empty">Open a Longform note.</p>
+  {:else}
+    <div class="longform-form-bar">
+      {#each PAGE_FORMS as item (item)}
+        <button
+          type="button"
+          class="longform-notes-item"
+          class:is-active={form === item}
+          on:click={() => onForm(item)}
+        >
+          {formLabel[item]}
+        </button>
+      {/each}
+    </div>
+    {#if form === "verse"}
+      <button type="button" class="longform-notes-item" on:click={onStanza}>
+        New stanza
+      </button>
+    {:else if form === "script"}
+      <div class="longform-notes-list">
+        <button type="button" class="longform-notes-item" on:click={onScene}>
+          Scene heading
+        </button>
+        <button type="button" class="longform-notes-item" on:click={onCharacter}>
+          Character cue
+        </button>
+        <button
+          type="button"
+          class="longform-notes-item"
+          on:click={onParenthetical}
+        >
+          Parenthetical
+        </button>
+      </div>
+    {/if}
+  {/if}
   <h3>Private comments</h3>
   <p class="longform-notes-lead">
     Questions kept in the note. Obsidian's word and character counts still
@@ -80,6 +134,30 @@
   h3,
   h4 {
     margin: 0;
+  }
+
+  h3 + h3,
+  .longform-notes-pane > h3:not(:first-child) {
+    margin-top: var(--size-4-6);
+  }
+
+  .longform-form-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--size-4-1);
+    max-width: 100%;
+    min-width: 0;
+    margin-top: var(--size-4-2);
+  }
+
+  .longform-form-bar .longform-notes-item {
+    width: auto;
+    flex: 1 1 40%;
+    font-style: normal;
+  }
+
+  .longform-notes-item.is-active {
+    border-color: var(--text-accent);
   }
 
   h4 {

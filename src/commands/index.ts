@@ -26,6 +26,16 @@ import {
 import { insertMissingWord } from "./missing-word";
 import { readAloud, stopReading } from "./read-aloud";
 import {
+  characterCue,
+  newStanza,
+  parenthetical,
+  sceneHeading,
+  setColumnForm,
+  setProseForm,
+  setScriptForm,
+  setVerseForm,
+} from "./page-form";
+import {
   toggleFocusMode,
   toggleHighlightCurrentLine,
   toggleTypewriterMode,
@@ -58,6 +68,14 @@ const commandBuilders = [
   insertMissingWord,
   readAloud,
   stopReading,
+  setProseForm,
+  setVerseForm,
+  setColumnForm,
+  setScriptForm,
+  newStanza,
+  sceneHeading,
+  characterCue,
+  parenthetical,
 ];
 
 export function addCommands(plugin: LongformPlugin) {

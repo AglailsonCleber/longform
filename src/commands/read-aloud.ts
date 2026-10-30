@@ -1,6 +1,7 @@
 import { Notice, type MarkdownFileInfo, type MarkdownView } from "obsidian";
 import { get } from "svelte/store";
 
+import { PAGE_FORM_KEY, pageForm } from "src/model/page-form";
 import {
   spokenUnits,
   spokenUnitsFromLine,
@@ -95,11 +96,21 @@ export const readAloud: CommandBuilder = () => ({
       return;
     }
 
+    const form = pageForm(
+      view.file
+        ? view.app.metadataCache.getFileCache(view.file)?.frontmatter?.[
+            PAGE_FORM_KEY
+          ]
+        : undefined
+    );
     const selected = editor.getSelection();
     const units =
       selected.length > 0
-        ? spokenUnits(selected)
-        : spokenUnitsFromLine(spokenUnits(editor.getValue()), editor.getCursor().line);
+        ? spokenUnits(selected, form)
+        : spokenUnitsFromLine(
+            spokenUnits(editor.getValue(), form),
+            editor.getCursor().line
+          );
     if (units.length === 0) {
       new Notice("Nothing to read.");
       return;

@@ -1,7 +1,5 @@
 import { marginNotesInLine } from "./margin-note";
-
-/** A verse line stays at or under this many characters. */
-export const VERSE_LINE_MAX = 60;
+import type { PageForm } from "./page-form";
 
 export const READ_ALOUD_PAUSE = {
   verse: 320,
@@ -41,11 +39,14 @@ export function spokenLine(line: string): string {
 }
 
 /**
- * Units the voice speaks. A blank line ends a paragraph.
- * A block of short lines is a stanza: a pause after each verse,
- * and a longer one after the last.
+ * Units the voice speaks. Prose and column pause between paragraphs.
+ * Verse pauses after each line and longer after a stanza.
+ * A screenplay pauses after each line, and longer where a blank line falls.
  */
-export function spokenUnits(contents: string): SpokenUnit[] {
+export function spokenUnits(
+  contents: string,
+  form: PageForm = "prose"
+): SpokenUnit[] {
   const lines = contents.split(/\r?\n/);
   const start = bodyStartLine(lines);
   const units: SpokenUnit[] = [];
@@ -55,25 +56,27 @@ export function spokenUnits(contents: string): SpokenUnit[] {
     if (block.length === 0) {
       return;
     }
-    const verse =
-      block.length > 1 &&
-      block.every((item) => item.text.length <= VERSE_LINE_MAX);
-    if (!verse) {
+    if (form === "verse" || form === "script") {
+      block.forEach((item, index) => {
+        const last = index === block.length - 1;
+        const pauseAfter = last
+          ? form === "verse"
+            ? READ_ALOUD_PAUSE.stanza
+            : READ_ALOUD_PAUSE.paragraph
+          : READ_ALOUD_PAUSE.verse;
+        units.push({
+          text: item.text,
+          pauseAfter,
+          fromLine: item.line,
+          toLine: item.line,
+        });
+      });
+    } else {
       units.push({
         text: block.map((item) => item.text).join(" "),
         pauseAfter: READ_ALOUD_PAUSE.paragraph,
         fromLine: block[0].line,
         toLine: block[block.length - 1].line,
-      });
-    } else {
-      block.forEach((item, index) => {
-        const last = index === block.length - 1;
-        units.push({
-          text: item.text,
-          pauseAfter: last ? READ_ALOUD_PAUSE.stanza : READ_ALOUD_PAUSE.verse,
-          fromLine: item.line,
-          toLine: item.line,
-        });
       });
     }
     block = [];

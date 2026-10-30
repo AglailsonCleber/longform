@@ -53,6 +53,12 @@ import {
 } from "./model/stores";
 import { addCommands } from "./commands";
 import { determineMigrationStatus } from "./model/migration";
+import {
+  PAGE_FORM_CLASSES,
+  PAGE_FORM_KEY,
+  pageForm,
+  pageFormClass,
+} from "./model/page-form";
 import { draftForPath } from "./model/scene-navigation";
 import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
@@ -209,6 +215,11 @@ export default class LongformPlugin extends Plugin {
         this.styleLongformLeaves();
       })
     );
+    this.registerEvent(
+      this.app.metadataCache.on("changed", () => {
+        this.styleLongformLeaves();
+      })
+    );
     this.unsubscribeDrafts = drafts.subscribe((allDrafts) => {
       this.styleLongformLeaves(allDrafts);
     });
@@ -220,6 +231,7 @@ export default class LongformPlugin extends Plugin {
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
       leaf.view.containerEl.classList.remove(
         ...PAGE_MODE_CLASSES,
+        ...PAGE_FORM_CLASSES,
         "longform-measure",
         MANUSCRIPT_LIGHT_CLASS,
         MANUSCRIPT_DARK_CLASS
@@ -626,6 +638,20 @@ export default class LongformPlugin extends Plugin {
           MANUSCRIPT_DARK_CLASS,
           contrast === MANUSCRIPT_DARK_CLASS
         );
+        const form = pageForm(
+          draft
+            ? this.app.metadataCache.getFileCache(leaf.view.file)?.frontmatter?.[
+                PAGE_FORM_KEY
+              ]
+            : undefined
+        );
+        for (const cls of PAGE_FORM_CLASSES) {
+          const want = Boolean(draft) && cls === pageFormClass(form);
+          if (el.classList.contains(cls) !== want) {
+            el.classList.toggle(cls, want);
+            pageClassesChanged = true;
+          }
+        }
         const measure = draft ? readingMeasureVars(pageSettings) : null;
         el.classList.toggle("longform-measure", Boolean(measure));
         if (measure) {

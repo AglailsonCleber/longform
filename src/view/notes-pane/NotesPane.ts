@@ -7,6 +7,16 @@ import {
   type MarginNoteHit,
 } from "src/model/margin-note";
 import { missingWordsInDocument } from "src/model/missing-word";
+import {
+  insertCharacterCue,
+  insertParenthetical,
+  insertSceneHeading,
+  insertStanza,
+  PAGE_FORM_KEY,
+  pageForm,
+  setNoteForm,
+} from "src/model/page-form";
+import type { PageForm } from "src/model/page-form";
 import { draftForPath, scenePath } from "src/model/scene-navigation";
 import { drafts, selectedDraft } from "src/model/stores";
 import type { Draft } from "src/model/types";
@@ -51,9 +61,17 @@ export class NotesPane extends ItemView {
         comments: [] as PrivateComment[],
         missingWords: [] as PrivateComment[],
         project: "",
+        form: "prose" as PageForm,
         onOpen: (comment: PrivateComment) => {
           void this.openPlace(comment);
         },
+        onForm: (form: PageForm) => {
+          void this.chooseForm(form);
+        },
+        onStanza: () => this.editNote(insertStanza),
+        onScene: () => this.editNote(insertSceneHeading),
+        onCharacter: () => this.editNote(insertCharacterCue),
+        onParenthetical: () => this.editNote(insertParenthetical),
       },
     });
 
@@ -62,6 +80,7 @@ export class NotesPane extends ItemView {
     this.unsubscribers.push(drafts.subscribe(queue));
     this.unsubscribers.push(selectedDraft.subscribe(queue));
     this.registerEvent(this.app.vault.on("modify", queue));
+    this.registerEvent(this.app.metadataCache.on("changed", queue));
     this.registerEvent(this.app.workspace.on("editor-change", queue));
     this.queueRefresh();
   }
@@ -99,7 +118,12 @@ export class NotesPane extends ItemView {
     const generation = ++this.generation;
     const draft = this.currentDraft();
     if (!draft || !this.pane) {
-      this.pane?.$set({ comments: [], missingWords: [], project: "" });
+      this.pane?.$set({
+        comments: [],
+        missingWords: [],
+        project: "",
+        form: "prose",
+      });
       return;
     }
 
@@ -148,7 +172,50 @@ export class NotesPane extends ItemView {
     if (generation !== this.generation || !this.pane) {
       return;
     }
-    this.pane.$set({ comments, missingWords, project: draft.title });
+    this.pane.$set({
+      comments,
+      missingWords,
+      project: draft.title,
+      form: this.openForm(),
+    });
+  }
+
+  private openFile(): TFile | null {
+    const file = this.app.workspace.getActiveFile();
+    if (!(file instanceof TFile)) {
+      return null;
+    }
+    if (!draftForPath(file.path, get(drafts))) {
+      return null;
+    }
+    return file;
+  }
+
+  private openForm(): PageForm {
+    const file = this.openFile();
+    if (!file) {
+      return "prose";
+    }
+    return pageForm(
+      this.app.metadataCache.getFileCache(file)?.frontmatter?.[PAGE_FORM_KEY]
+    );
+  }
+
+  private async chooseForm(form: PageForm): Promise<void> {
+    const file = this.openFile();
+    if (!file) {
+      return;
+    }
+    await setNoteForm(this.app, file, form);
+  }
+
+  private editNote(edit: (editor: MarkdownView["editor"]) => void): void {
+    const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+    if (!view || view.file?.path !== this.openFile()?.path) {
+      return;
+    }
+    edit(view.editor);
+    view.editor.focus();
   }
 
   private async openPlace(comment: PrivateComment): Promise<void> {
