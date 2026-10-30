@@ -6,6 +6,8 @@ import {
   marginNotesInLine,
   type MarginNoteHit,
 } from "src/model/margin-note";
+import { insertMissingWordInto } from "src/commands/missing-word";
+import { insertDialogueDashInto, insertQuotesInto } from "src/commands/portuguese";
 import { missingWordsInDocument } from "src/model/missing-word";
 import {
   insertCharacterCue,
@@ -72,6 +74,9 @@ export class NotesPane extends ItemView {
         onScene: () => this.editNote(insertSceneHeading),
         onCharacter: () => this.editNote(insertCharacterCue),
         onParenthetical: () => this.editNote(insertParenthetical),
+        onDash: () => this.editNote(insertDialogueDashInto),
+        onQuotes: () => this.editNote(insertQuotesInto),
+        onMissing: () => this.editNote(insertMissingWordInto),
       },
     });
 

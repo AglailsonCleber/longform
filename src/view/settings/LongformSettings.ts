@@ -195,6 +195,20 @@ export class LongformSettingsTab extends PluginSettingTab {
           }));
         });
       });
+    new Setting(containerEl)
+      .setName("Portuguese page")
+      .setDesc(
+        "Mark a Longform note as Portuguese (pt-BR) so the spell checker can use that dictionary. The dashes and quotes themselves are in the Private comments pane."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.portuguesePage);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            portuguesePage: value,
+          }));
+        });
+      });
 
     new Setting(containerEl).setName("Compile").setHeading();
 

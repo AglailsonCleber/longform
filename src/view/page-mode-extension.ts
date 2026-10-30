@@ -15,6 +15,16 @@ function clearMarks(view: EditorView): void {
   });
 }
 
+function markLanguage(view: EditorView, leaf: Element | null): void {
+  if (leaf?.classList.contains("longform-lang-pt")) {
+    view.contentDOM.lang = "pt-BR";
+    return;
+  }
+  if (view.contentDOM.lang === "pt-BR") {
+    view.contentDOM.removeAttribute("lang");
+  }
+}
+
 /**
  * Paints the current paragraph on the existing line elements.
  * Line decorations are avoided: in Live Preview they were copied into the note.
@@ -22,6 +32,7 @@ function clearMarks(view: EditorView): void {
 function paint(view: EditorView): void {
   clearMarks(view);
   const leaf = leafOf(view);
+  markLanguage(view, leaf);
   if (!leaf) {
     return;
   }

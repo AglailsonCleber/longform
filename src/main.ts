@@ -87,6 +87,7 @@ const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
   "lineHeight",
   "pageMargin",
   "lightManuscript",
+  "portuguesePage",
 ];
 
 // TODO: Try and abstract away more logic from actual plugin hooks here
@@ -232,6 +233,7 @@ export default class LongformPlugin extends Plugin {
       leaf.view.containerEl.classList.remove(
         ...PAGE_MODE_CLASSES,
         ...PAGE_FORM_CLASSES,
+        "longform-lang-pt",
         "longform-measure",
         MANUSCRIPT_LIGHT_CLASS,
         MANUSCRIPT_DARK_CLASS
@@ -645,6 +647,11 @@ export default class LongformPlugin extends Plugin {
               ]
             : undefined
         );
+        const portuguese = Boolean(draft) && pageSettings.portuguesePage;
+        if (el.classList.contains("longform-lang-pt") !== portuguese) {
+          el.classList.toggle("longform-lang-pt", portuguese);
+          pageClassesChanged = true;
+        }
         for (const cls of PAGE_FORM_CLASSES) {
           const want = Boolean(draft) && cls === pageFormClass(form);
           if (el.classList.contains(cls) !== want) {

@@ -24,6 +24,7 @@ import {
   showPrivateComments,
 } from "./margin-note";
 import { insertMissingWord } from "./missing-word";
+import { insertDialogueDash, insertQuotes } from "./portuguese";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -66,6 +67,8 @@ const commandBuilders = [
   listMarginNotes,
   showPrivateComments,
   insertMissingWord,
+  insertDialogueDash,
+  insertQuotes,
   readAloud,
   stopReading,
   setProseForm,
