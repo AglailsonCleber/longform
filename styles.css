@@ -104,3 +104,95 @@
 .longform-leaf.longform-manuscript-dark .cm-line {
   color: #f7f3ea;
 }
+
+.longform-leaf .cm-editor {
+  position: relative;
+}
+
+.longform-leaf .cm-editor.longform-has-margin-notes .cm-content {
+  margin-right: 14rem;
+}
+
+.longform-leaf .longform-margin-syntax {
+  font-size: 0;
+}
+
+.longform-margin-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.longform-leaf .cm-line.longform-margin-only {
+  min-height: 1.6em;
+}
+
+.longform-margin-note {
+  position: absolute;
+  width: 12rem;
+  padding-left: 0.55rem;
+  border-left: 2px solid var(--text-faint);
+  color: var(--text-muted);
+  font-size: 0.82em;
+  font-style: italic;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.longform-notes-pane,
+.longform-notes-pane .longform-notes-list,
+.longform-notes-pane button.longform-notes-item,
+.longform-margin-list,
+.longform-margin-list button.longform-margin-list-item {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.longform-notes-pane button.longform-notes-item,
+.longform-margin-list button.longform-margin-list-item {
+  height: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.longform-margin-note.is-empty {
+  color: var(--text-faint);
+}
+
+.longform-margin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.longform-margin-list-item {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 6px;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.longform-margin-list-item:hover {
+  background: var(--background-modifier-hover);
+}

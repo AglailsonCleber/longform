@@ -5,6 +5,7 @@ import {
   sceneFolderPath,
   scenePathForFolder,
 } from "src/model/scene-navigation";
+import { stripMarginNotes } from "src/model/margin-note";
 import type { Draft, SerializedWorkflow } from "src/model/types";
 import {
   CompileStepKind,
@@ -191,7 +192,7 @@ export async function compile(
 
   if (draft.format === "single") {
     const path = draft.vaultPath;
-    const contents = await app.vault.adapter.read(path);
+    const contents = stripMarginNotes(await app.vault.adapter.read(path));
     const metadata = app.metadataCache.getCache(path);
 
     currentInput = [
@@ -210,7 +211,7 @@ export async function compile(
     // Build initial inputs
     for (const scene of numberScenes(draft.scenes)) {
       const path = scenePathForFolder(scene.title, folderPath);
-      const contents = await app.vault.adapter.read(path);
+      const contents = stripMarginNotes(await app.vault.adapter.read(path));
       const metadata = app.metadataCache.getCache(path);
 
       currentInput.push({

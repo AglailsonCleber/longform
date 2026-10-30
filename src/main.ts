@@ -20,6 +20,10 @@ import {
   ExplorerPane,
 } from "./view/explorer/ExplorerPane";
 import {
+  VIEW_TYPE_LONGFORM_NOTES,
+  NotesPane,
+} from "./view/notes-pane/NotesPane";
+import {
   PASSTHROUGH_SAVE_SETTINGS_PATHS,
   type Draft,
   type LongformPluginSettings,
@@ -53,6 +57,7 @@ import { draftForPath } from "./model/scene-navigation";
 import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
+import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformPageExtension } from "./view/page-mode-extension";
 import {
   MANUSCRIPT_DARK_CLASS,
@@ -103,6 +108,10 @@ export default class LongformPlugin extends Plugin {
     this.registerView(
       VIEW_TYPE_LONGFORM_EXPLORER,
       (leaf: WorkspaceLeaf) => new ExplorerPane(leaf)
+    );
+    this.registerView(
+      VIEW_TYPE_LONGFORM_NOTES,
+      (leaf: WorkspaceLeaf) => new NotesPane(leaf)
     );
 
     this.registerEvent(
@@ -185,6 +194,7 @@ export default class LongformPlugin extends Plugin {
 
     addCommands(this);
     this.registerEditorExtension(longformPageExtension);
+    this.registerEditorExtension(longformMarginNoteExtension);
 
     // Dynamically style longform scenes
     this.registerEvent(
@@ -442,7 +452,36 @@ export default class LongformPlugin extends Plugin {
     );
 
     this.initLeaf();
+    this.ensureNotesLeaf();
     initialized.set(true);
+  }
+
+  ensureNotesLeaf(): void {
+    if (this.app.workspace.getLeavesOfType(VIEW_TYPE_LONGFORM_NOTES).length) {
+      return;
+    }
+    const leaf = this.app.workspace.getRightLeaf(false);
+    void leaf
+      .setViewState({
+        type: VIEW_TYPE_LONGFORM_NOTES,
+      })
+      .then(() => {
+        this.app.workspace.rightSplit.expand();
+        this.app.workspace.revealLeaf(leaf);
+      });
+  }
+
+  async showPrivateComments(): Promise<void> {
+    let leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_LONGFORM_NOTES)[0];
+    if (!leaf) {
+      leaf = this.app.workspace.getRightLeaf(false);
+      await leaf.setViewState({
+        type: VIEW_TYPE_LONGFORM_NOTES,
+        active: true,
+      });
+    }
+    this.app.workspace.rightSplit.expand();
+    this.app.workspace.revealLeaf(leaf);
   }
 
   initLeaf(): void {
@@ -560,10 +599,10 @@ export default class LongformPlugin extends Plugin {
       let pageClassesChanged = false;
       if (leaf.view instanceof FileView && leaf.view.file) {
         const draft = draftForPath(leaf.view.file.path, allDrafts);
-        if (draft) {
-          el.classList.add(LONGFORM_LEAF_CLASS);
-        } else {
-          el.classList.remove(LONGFORM_LEAF_CLASS);
+        const wantLeaf = Boolean(draft);
+        if (el.classList.contains(LONGFORM_LEAF_CLASS) !== wantLeaf) {
+          el.classList.toggle(LONGFORM_LEAF_CLASS, wantLeaf);
+          pageClassesChanged = true;
         }
         for (const cls of PAGE_MODE_CLASSES) {
           const want = Boolean(draft) && modes.includes(cls);

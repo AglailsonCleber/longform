@@ -19,6 +19,11 @@ import {
 } from "./templates";
 import { startNewSession } from "./word-counts";
 import {
+  insertMarginNote,
+  listMarginNotes,
+  showPrivateComments,
+} from "./margin-note";
+import {
   toggleFocusMode,
   toggleHighlightCurrentLine,
   toggleTypewriterMode,
@@ -45,6 +50,9 @@ const commandBuilders = [
   toggleHighlightCurrentLine,
   toggleFocusMode,
   toggleTypewriterMode,
+  insertMarginNote,
+  listMarginNotes,
+  showPrivateComments,
 ];
 
 export function addCommands(plugin: LongformPlugin) {
