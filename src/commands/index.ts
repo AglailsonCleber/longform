@@ -24,6 +24,7 @@ import {
   showPrivateComments,
 } from "./margin-note";
 import { insertMissingWord } from "./missing-word";
+import { readAloud, stopReading } from "./read-aloud";
 import {
   toggleFocusMode,
   toggleHighlightCurrentLine,
@@ -55,6 +56,8 @@ const commandBuilders = [
   listMarginNotes,
   showPrivateComments,
   insertMissingWord,
+  readAloud,
+  stopReading,
 ];
 
 export function addCommands(plugin: LongformPlugin) {
