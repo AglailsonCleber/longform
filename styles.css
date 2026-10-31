@@ -158,6 +158,35 @@
   font-family: "Courier New", Courier, monospace;
 }
 
+.longform-leaf .longform-card-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+
+.longform-leaf .longform-card-name[data-longform-status="hypothesis"] {
+  text-decoration-style: dashed;
+}
+
+.longform-leaf .longform-card-name[data-longform-basis="fact"] {
+  text-decoration-color: var(--text-accent);
+}
+
+.longform-card-tip {
+  position: absolute;
+  z-index: 30;
+  max-width: 16rem;
+  padding: 0.4rem 0.55rem;
+  background: var(--background-primary);
+  color: var(--text-normal);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 0.25rem;
+  font-size: var(--font-ui-small);
+  line-height: 1.35;
+  pointer-events: none;
+}
+
 .longform-leaf .longform-missing-word {
   background-color: var(--text-selection);
   border-radius: 0.2em;

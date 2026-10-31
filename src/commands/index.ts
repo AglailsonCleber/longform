@@ -25,6 +25,7 @@ import {
 } from "./margin-note";
 import { insertMissingWord } from "./missing-word";
 import { insertDialogueDash, insertHyphen, insertQuotes } from "./portuguese";
+import { openCardAtCursor, replaceBookName } from "./bible";
 import { openBesidePage, restoreRecoveredPage } from "./page-beside";
 import { readAloud, stopReading } from "./read-aloud";
 import {
@@ -71,6 +72,8 @@ const commandBuilders = [
   insertDialogueDash,
   insertHyphen,
   insertQuotes,
+  openCardAtCursor,
+  replaceBookName,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

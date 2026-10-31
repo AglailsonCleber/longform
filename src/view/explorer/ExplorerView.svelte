@@ -9,6 +9,7 @@
   import ProjectPicker from "./ProjectPicker.svelte";
   import SceneList from "./SceneList.svelte";
   import ProjectDetails from "./ProjectDetails.svelte";
+  import BibleView from "../bible/BibleView.svelte";
   import { needsMigration } from "src/model/migration";
   import { getContext } from "svelte";
   import Tab from "./Tab.svelte";
@@ -62,6 +63,7 @@
           <div class="tab-list">
             <Tab tab="Scenes" />
             <Tab tab="Project" />
+            <Tab tab="Bible" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -74,6 +76,10 @@
           <div class="tab-panel-container">
             <ProjectDetails />
           </div>
+        {:else if $selectedTab === "Bible"}
+          <div class="tab-panel-container">
+            <BibleView />
+          </div>
         {:else}
           <div class="tab-panel-container disconnected">
             <CompileView />
@@ -85,12 +91,17 @@
         <div class="tabs">
           <div class="tab-list">
             <Tab tab="Project" />
+            <Tab tab="Bible" />
             <Tab tab="Compile" />
           </div>
         </div>
         {#if $selectedTab === "Project"}
           <div class="tab-panel-container">
             <ProjectDetails />
+          </div>
+        {:else if $selectedTab === "Bible"}
+          <div class="tab-panel-container">
+            <BibleView />
           </div>
         {:else}
           <div class="tab-panel-container">
@@ -117,6 +128,8 @@
   }
 
   .tab-list {
+    display: flex;
+    flex-wrap: wrap;
     margin: 0;
     font-size: 0; /* To remove spacing between tabs */
   }

@@ -65,6 +65,10 @@ import { draftForPath } from "./model/scene-navigation";
 import { WritingSessionTracker } from "./model/writing-session-tracker";
 import NewProjectModal from "./view/project-lifecycle/new-project-modal";
 import { LongformAPI } from "./api/LongformAPI";
+import { cardFromFrontmatter } from "./model/bible";
+import type { BibleCard } from "./model/bible";
+import { bibleCards } from "./model/bible-store";
+import { longformBibleExtension } from "./view/bible-extension";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
 import { PageRecovery } from "./view/page-recovery";
@@ -218,6 +222,11 @@ export default class LongformPlugin extends Plugin {
     this.registerEditorExtension(longformPageExtension);
     this.registerEditorExtension(longformMarginNoteExtension);
     this.registerEditorExtension(longformMissingWordExtension);
+    this.registerEditorExtension(longformBibleExtension);
+    this.register(() => {
+      document.removeEventListener("longform-open-card", this.openBibleCard);
+    });
+    document.addEventListener("longform-open-card", this.openBibleCard);
 
     // Dynamically style longform scenes
     this.registerEvent(
@@ -233,6 +242,7 @@ export default class LongformPlugin extends Plugin {
     this.registerEvent(
       this.app.metadataCache.on("changed", () => {
         this.styleLongformLeaves();
+        this.refreshBible();
       })
     );
     this.unsubscribeDrafts = drafts.subscribe((allDrafts) => {
@@ -390,6 +400,7 @@ export default class LongformPlugin extends Plugin {
 
     // Continue with the rest of initialization only after sync is complete
     this.watchProjects();
+    this.refreshBible();
 
     const defaultToScenes = once(function (d: Draft) {
       if (d && d.format === "scenes") {
@@ -652,6 +663,31 @@ export default class LongformPlugin extends Plugin {
     );
   }
 
+  private openBibleCard = (event: Event): void => {
+    const path = (event as CustomEvent<{ path?: string }>).detail?.path;
+    if (!path) {
+      return;
+    }
+    const file = this.app.vault.getAbstractFileByPath(path);
+    if (file instanceof TFile) {
+      void this.app.workspace.getLeaf(false).openFile(file);
+    }
+  };
+
+  private refreshBible(): void {
+    const cards: BibleCard[] = [];
+    for (const file of this.app.vault.getMarkdownFiles()) {
+      const card = cardFromFrontmatter(
+        file.path,
+        this.app.metadataCache.getFileCache(file)?.frontmatter
+      );
+      if (card) {
+        cards.push(card);
+      }
+    }
+    bibleCards.set(cards);
+  }
+
   private queuePageStyle(): void {
     this.styleLongformLeaves();
     window.requestAnimationFrame(() => {
@@ -668,6 +704,15 @@ export default class LongformPlugin extends Plugin {
       let pageClassesChanged = false;
       if (leaf.view instanceof FileView && leaf.view.file) {
         const draft = draftForPath(leaf.view.file.path, allDrafts);
+        const wantPath = draft ? leaf.view.file.path : "";
+        if ((el.dataset.longformPath ?? "") !== wantPath) {
+          if (wantPath.length > 0) {
+            el.dataset.longformPath = wantPath;
+          } else {
+            delete el.dataset.longformPath;
+          }
+          pageClassesChanged = true;
+        }
         const wantLeaf = Boolean(draft);
         if (el.classList.contains(LONGFORM_LEAF_CLASS) !== wantLeaf) {
           el.classList.toggle(LONGFORM_LEAF_CLASS, wantLeaf);
