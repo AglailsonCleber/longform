@@ -39,6 +39,7 @@ import {
   readThrough,
   writeTheContents,
 } from "./architecture";
+import { newAlternateEnding } from "./plot";
 import { openBesidePage, restoreRecoveredPage } from "./page-beside";
 import { readAloud, stopReading } from "./read-aloud";
 import {
@@ -96,6 +97,7 @@ const commandBuilders = [
   newSceneCard,
   newSonnetPiece,
   newColumnPiece,
+  newAlternateEnding,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

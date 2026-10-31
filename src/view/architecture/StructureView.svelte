@@ -233,7 +233,7 @@
   <div class="longform-structure-fields">
     <input type="text" placeholder="Point of view" bind:value={povFilter} />
     <input type="text" placeholder="Place" bind:value={placeFilter} />
-    <input type="text" placeholder="Story time" bind:value={whenFilter} />
+    <input type="text" placeholder="World time" bind:value={whenFilter} />
     <input type="text" placeholder="In the scene" bind:value={castFilter} />
   </div>
 
@@ -267,7 +267,7 @@
         <div class="longform-structure-fields">
           <input type="text" placeholder="Point of view" bind:value={pov} />
           <input type="text" placeholder="Place" bind:value={place} />
-          <input type="text" placeholder="Story time" bind:value={when} />
+          <input type="text" placeholder="World time" bind:value={when} />
           <input type="text" placeholder="Who is here, separated by commas" bind:value={castText} />
         </div>
         <div class="longform-structure-actions">
