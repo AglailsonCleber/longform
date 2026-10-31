@@ -68,6 +68,10 @@ import { LongformAPI } from "./api/LongformAPI";
 import { cardFromFrontmatter } from "./model/bible";
 import type { BibleCard } from "./model/bible";
 import { bibleCards } from "./model/bible-store";
+import { captureFromFrontmatter, exercisePageForm } from "./model/capture";
+import type { CaptureNote } from "./model/capture";
+import { captures } from "./model/capture-store";
+import { stopDictation } from "./commands/dictation";
 import { longformBibleExtension } from "./view/bible-extension";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
@@ -243,6 +247,7 @@ export default class LongformPlugin extends Plugin {
       this.app.metadataCache.on("changed", () => {
         this.styleLongformLeaves();
         this.refreshBible();
+        this.refreshCaptures();
       })
     );
     this.unsubscribeDrafts = drafts.subscribe((allDrafts) => {
@@ -281,6 +286,7 @@ export default class LongformPlugin extends Plugin {
   }
 
   onunload(): void {
+    stopDictation();
     this.pageRecovery?.flush();
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
       leaf.view.containerEl.querySelector(":scope > .longform-writing-bar")?.remove();
@@ -401,6 +407,7 @@ export default class LongformPlugin extends Plugin {
     // Continue with the rest of initialization only after sync is complete
     this.watchProjects();
     this.refreshBible();
+    this.refreshCaptures();
 
     const defaultToScenes = once(function (d: Draft) {
       if (d && d.format === "scenes") {
@@ -688,6 +695,20 @@ export default class LongformPlugin extends Plugin {
     bibleCards.set(cards);
   }
 
+  private refreshCaptures(): void {
+    const notes: CaptureNote[] = [];
+    for (const file of this.app.vault.getMarkdownFiles()) {
+      const note = captureFromFrontmatter(
+        file.path,
+        this.app.metadataCache.getFileCache(file)?.frontmatter
+      );
+      if (note) {
+        notes.push(note);
+      }
+    }
+    captures.set(notes);
+  }
+
   private queuePageStyle(): void {
     this.styleLongformLeaves();
     window.requestAnimationFrame(() => {
@@ -704,6 +725,11 @@ export default class LongformPlugin extends Plugin {
       let pageClassesChanged = false;
       if (leaf.view instanceof FileView && leaf.view.file) {
         const draft = draftForPath(leaf.view.file.path, allDrafts);
+        const frontmatter = this.app.metadataCache.getFileCache(leaf.view.file)
+          ?.frontmatter;
+        const capture = captureFromFrontmatter(leaf.view.file.path, frontmatter);
+        const isExercise = capture?.kind === "exercise";
+        const wantLeaf = Boolean(draft) || isExercise;
         const wantPath = draft ? leaf.view.file.path : "";
         if ((el.dataset.longformPath ?? "") !== wantPath) {
           if (wantPath.length > 0) {
@@ -713,13 +739,12 @@ export default class LongformPlugin extends Plugin {
           }
           pageClassesChanged = true;
         }
-        const wantLeaf = Boolean(draft);
         if (el.classList.contains(LONGFORM_LEAF_CLASS) !== wantLeaf) {
           el.classList.toggle(LONGFORM_LEAF_CLASS, wantLeaf);
           pageClassesChanged = true;
         }
         for (const cls of PAGE_MODE_CLASSES) {
-          const want = Boolean(draft) && modes.includes(cls);
+          const want = wantLeaf && modes.includes(cls);
           if (el.classList.contains(cls) !== want) {
             el.classList.toggle(cls, want);
             pageClassesChanged = true;
@@ -727,7 +752,7 @@ export default class LongformPlugin extends Plugin {
         }
         const pageSettings = get(pluginSettings);
         const contrast = manuscriptContrastClass(
-          Boolean(draft) && pageSettings.lightManuscript,
+          wantLeaf && pageSettings.lightManuscript,
           appColorScheme(el.ownerDocument.body.classList)
         );
         el.classList.toggle(
@@ -738,26 +763,23 @@ export default class LongformPlugin extends Plugin {
           MANUSCRIPT_DARK_CLASS,
           contrast === MANUSCRIPT_DARK_CLASS
         );
-        const form = pageForm(
-          draft
-            ? this.app.metadataCache.getFileCache(leaf.view.file)?.frontmatter?.[
-                PAGE_FORM_KEY
-              ]
-            : undefined
-        );
-        const portuguese = Boolean(draft) && pageSettings.portuguesePage;
+        const form =
+          isExercise && capture
+            ? exercisePageForm(capture.form)
+            : pageForm(draft ? frontmatter?.[PAGE_FORM_KEY] : undefined);
+        const portuguese = wantLeaf && pageSettings.portuguesePage;
         if (el.classList.contains("longform-lang-pt") !== portuguese) {
           el.classList.toggle("longform-lang-pt", portuguese);
           pageClassesChanged = true;
         }
         for (const cls of PAGE_FORM_CLASSES) {
-          const want = Boolean(draft) && cls === pageFormClass(form);
+          const want = wantLeaf && cls === pageFormClass(form);
           if (el.classList.contains(cls) !== want) {
             el.classList.toggle(cls, want);
             pageClassesChanged = true;
           }
         }
-        const measure = draft ? readingMeasureVars(pageSettings) : null;
+        const measure = wantLeaf ? readingMeasureVars(pageSettings) : null;
         el.classList.toggle("longform-measure", Boolean(measure));
         if (measure) {
           for (const [name, value] of Object.entries(measure)) {
@@ -771,7 +793,7 @@ export default class LongformPlugin extends Plugin {
         syncWritingBar(
           el,
           leaf.view instanceof MarkdownView ? leaf.view : null,
-          Boolean(draft)
+          wantLeaf
         );
       }
 

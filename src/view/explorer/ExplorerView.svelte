@@ -10,6 +10,7 @@
   import SceneList from "./SceneList.svelte";
   import ProjectDetails from "./ProjectDetails.svelte";
   import BibleView from "../bible/BibleView.svelte";
+  import CaptureView from "../capture/CaptureView.svelte";
   import { needsMigration } from "src/model/migration";
   import { getContext } from "svelte";
   import Tab from "./Tab.svelte";
@@ -64,6 +65,7 @@
             <Tab tab="Scenes" />
             <Tab tab="Project" />
             <Tab tab="Bible" />
+            <Tab tab="Capture" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -80,6 +82,10 @@
           <div class="tab-panel-container">
             <BibleView />
           </div>
+        {:else if $selectedTab === "Capture"}
+          <div class="tab-panel-container">
+            <CaptureView />
+          </div>
         {:else}
           <div class="tab-panel-container disconnected">
             <CompileView />
@@ -92,6 +98,7 @@
           <div class="tab-list">
             <Tab tab="Project" />
             <Tab tab="Bible" />
+            <Tab tab="Capture" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -102,6 +109,10 @@
         {:else if $selectedTab === "Bible"}
           <div class="tab-panel-container">
             <BibleView />
+          </div>
+        {:else if $selectedTab === "Capture"}
+          <div class="tab-panel-container">
+            <CaptureView />
           </div>
         {:else}
           <div class="tab-panel-container">

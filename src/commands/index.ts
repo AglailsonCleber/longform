@@ -26,6 +26,12 @@ import {
 import { insertMissingWord } from "./missing-word";
 import { insertDialogueDash, insertHyphen, insertQuotes } from "./portuguese";
 import { openCardAtCursor, replaceBookName } from "./bible";
+import {
+  captureToInbox,
+  dictateDraft,
+  noteFromPassage,
+  stopDictationCommand,
+} from "./capture";
 import { openBesidePage, restoreRecoveredPage } from "./page-beside";
 import { readAloud, stopReading } from "./read-aloud";
 import {
@@ -74,6 +80,10 @@ const commandBuilders = [
   insertQuotes,
   openCardAtCursor,
   replaceBookName,
+  captureToInbox,
+  dictateDraft,
+  stopDictationCommand,
+  noteFromPassage,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,
