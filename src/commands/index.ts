@@ -32,6 +32,13 @@ import {
   noteFromPassage,
   stopDictationCommand,
 } from "./capture";
+import {
+  newColumnPiece,
+  newSceneCard,
+  newSonnetPiece,
+  readThrough,
+  writeTheContents,
+} from "./architecture";
 import { openBesidePage, restoreRecoveredPage } from "./page-beside";
 import { readAloud, stopReading } from "./read-aloud";
 import {
@@ -84,6 +91,11 @@ const commandBuilders = [
   dictateDraft,
   stopDictationCommand,
   noteFromPassage,
+  readThrough,
+  writeTheContents,
+  newSceneCard,
+  newSonnetPiece,
+  newColumnPiece,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

@@ -6,6 +6,7 @@ import {
   scenePathForFolder,
 } from "src/model/scene-navigation";
 import { stripMarginNotes } from "src/model/margin-note";
+import { ROLE_KEY, compiles } from "src/model/architecture";
 import type { Draft, SerializedWorkflow } from "src/model/types";
 import {
   CompileStepKind,
@@ -192,8 +193,15 @@ export async function compile(
 
   if (draft.format === "single") {
     const path = draft.vaultPath;
-    const contents = stripMarginNotes(await app.vault.adapter.read(path));
     const metadata = app.metadataCache.getCache(path);
+    if (!compiles(metadata?.frontmatter?.[ROLE_KEY])) {
+      statusCallback({
+        kind: "CompileStatusError",
+        error: "This piece is kept out of the manuscript.",
+      });
+      return;
+    }
+    const contents = stripMarginNotes(await app.vault.adapter.read(path));
 
     currentInput = [
       {
@@ -211,8 +219,11 @@ export async function compile(
     // Build initial inputs
     for (const scene of numberScenes(draft.scenes)) {
       const path = scenePathForFolder(scene.title, folderPath);
-      const contents = stripMarginNotes(await app.vault.adapter.read(path));
       const metadata = app.metadataCache.getCache(path);
+      if (!compiles(metadata?.frontmatter?.[ROLE_KEY])) {
+        continue;
+      }
+      const contents = stripMarginNotes(await app.vault.adapter.read(path));
 
       currentInput.push({
         path,
@@ -222,6 +233,13 @@ export async function compile(
         indentationLevel: scene.indent,
         numbering: scene.numbering,
       });
+    }
+    if (currentInput.length === 0) {
+      statusCallback({
+        kind: "CompileStatusError",
+        error: "Every piece is kept out of the manuscript.",
+      });
+      return;
     }
   }
 

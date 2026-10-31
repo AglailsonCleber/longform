@@ -71,6 +71,7 @@ import { bibleCards } from "./model/bible-store";
 import { captureFromFrontmatter, exercisePageForm } from "./model/capture";
 import type { CaptureNote } from "./model/capture";
 import { captures } from "./model/capture-store";
+import { structureRevision } from "./model/architecture-store";
 import { stopDictation } from "./commands/dictation";
 import { longformBibleExtension } from "./view/bible-extension";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
@@ -248,6 +249,7 @@ export default class LongformPlugin extends Plugin {
         this.styleLongformLeaves();
         this.refreshBible();
         this.refreshCaptures();
+        structureRevision.update((revision) => revision + 1);
       })
     );
     this.unsubscribeDrafts = drafts.subscribe((allDrafts) => {
@@ -408,6 +410,7 @@ export default class LongformPlugin extends Plugin {
     this.watchProjects();
     this.refreshBible();
     this.refreshCaptures();
+    structureRevision.update((revision) => revision + 1);
 
     const defaultToScenes = once(function (d: Draft) {
       if (d && d.format === "scenes") {

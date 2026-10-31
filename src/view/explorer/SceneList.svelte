@@ -9,6 +9,7 @@
 
   import { activeFile } from "../stores";
   import { drafts, pluginSettings, selectedDraft } from "src/model/stores";
+  import { structureRevision } from "src/model/architecture-store";
   import SortableList from "../sortable/SortableList.svelte";
   import type { IndentedScene, MultipleSceneDraft } from "src/model/types";
   import Disclosure from "../components/Disclosure.svelte";
@@ -42,10 +43,12 @@
     hidden: boolean;
     numbering: number[];
     status: string | undefined;
+    role: string | undefined;
   };
   let items: SceneItem[];
   let collapsedItems: string[] = [];
   $: {
+    void $structureRevision;
     items =
       $selectedDraft && $selectedDraft.format === "scenes"
         ? itemsFromScenes($selectedDraft.scenes, collapsedItems)
@@ -80,14 +83,17 @@
       const path = makeScenePath($selectedDraft as MultipleSceneDraft, title);
       const file = app.vault.getAbstractFileByPath(path);
       let status = undefined;
+      let role = undefined;
       if (file && file instanceof TFile) {
         const metadata = app.metadataCache.getFileCache(file);
-        if (
-          metadata &&
-          metadata.frontmatter &&
-          metadata.frontmatter["status"]
-        ) {
-          status = `${metadata.frontmatter["status"]}`;
+        const frontmatter = metadata?.frontmatter;
+        const pieceStatus = frontmatter?.["longform-status"] ?? frontmatter?.["status"];
+        if (pieceStatus) {
+          status = `${pieceStatus}`;
+        }
+        const pieceRole = frontmatter?.["longform-role"];
+        if (pieceRole === "cut" || pieceRole === "variant" || pieceRole === "appendix") {
+          role = `${pieceRole}`;
         }
       }
       const item = {
@@ -99,6 +105,7 @@
         hidden,
         numbering,
         status,
+        role,
       };
       itemsToReturn.push(item);
     });
@@ -394,6 +401,12 @@
           >
             {item.name}
           </div>
+          {#if item.status}
+            <span class="longform-piece-state">{item.status}</span>
+          {/if}
+          {#if item.role}
+            <span class="longform-piece-state">{item.role}</span>
+          {/if}
         </div>
       </div>
     </SortableList>
@@ -513,6 +526,12 @@
 
   .longform-scene-number::after {
     content: ".";
+  }
+
+  .longform-piece-state {
+    margin-left: var(--size-4-1);
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
   }
 
   #longform-unknown-files-wizard {
