@@ -40,6 +40,13 @@ import {
   writeTheContents,
 } from "./architecture";
 import { newAlternateEnding } from "./plot";
+import {
+  earlierWording,
+  nameThisVersion,
+  proposeChange,
+  readAsReader,
+  setRevisionMark,
+} from "./revision";
 import { openBesidePage, restoreRecoveredPage } from "./page-beside";
 import { readAloud, stopReading } from "./read-aloud";
 import {
@@ -98,6 +105,11 @@ const commandBuilders = [
   newSonnetPiece,
   newColumnPiece,
   newAlternateEnding,
+  nameThisVersion,
+  earlierWording,
+  setRevisionMark,
+  proposeChange,
+  readAsReader,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

@@ -275,3 +275,31 @@
 .longform-margin-list-item:hover {
   background: var(--background-modifier-hover);
 }
+
+.longform-prose-echo {
+  text-decoration: underline dotted;
+}
+
+.longform-prose-long {
+  background: color-mix(in srgb, var(--text-accent) 12%, transparent);
+}
+
+.longform-prose-cliche,
+.longform-prose-adverb {
+  text-decoration: underline;
+}
+
+.longform-reader .longform-writing-bar,
+.longform-reader .metadata-container,
+.longform-reader .longform-margin-note,
+.longform-reader .longform-card-tip {
+  display: none;
+}
+
+.longform-reader .markdown-preview-sizer {
+  width: min(66ch, calc(100% - 2rem));
+  min-height: calc(100vh - 6rem);
+  margin: 1.5rem auto 3rem;
+  padding: 3rem 2.2rem 4rem;
+  background: var(--background-primary);
+}

@@ -3,6 +3,7 @@ import {
   type KeymapContext,
   Menu,
   TAbstractFile,
+  TFile,
   WorkspaceLeaf,
   type PaneType,
   Scope,
@@ -22,6 +23,7 @@ import { insertScene } from "src/model/draft-utils";
 import NewDraftModal from "src/view/project-lifecycle/new-draft-modal";
 import { UndoManager } from "../undo/undo-manager";
 import { ignoreScene } from "./scene-menu-items";
+import { trashPiece } from "src/commands/revision";
 import { appContext } from "../utils";
 
 export const VIEW_TYPE_LONGFORM_EXPLORER = "VIEW_TYPE_LONGFORM_EXPLORER";
@@ -190,6 +192,15 @@ export class ExplorerPane extends ItemView {
           item.setTitle("Rename");
           item.setIcon("pencil");
           item.onClick(onRename);
+        });
+        menu.addItem((item) => {
+          item.setTitle("Move to Longform trash");
+          item.setIcon("archive");
+          item.onClick(() => {
+            if (file instanceof TFile) {
+              void trashPiece(this.app, file);
+            }
+          });
         });
         menu.addItem((item) => {
           item.setTitle("Delete");

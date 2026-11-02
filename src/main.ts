@@ -73,6 +73,9 @@ import type { CaptureNote } from "./model/capture";
 import { captures } from "./model/capture-store";
 import { structureRevision } from "./model/architecture-store";
 import { stopDictation } from "./commands/dictation";
+import { readerPaths } from "./model/revision-store";
+import { longformProseExtension } from "./view/prose-extension";
+import { bindRevisionLedger, RevisionLedger } from "./view/revision-ledger";
 import { longformBibleExtension } from "./view/bible-extension";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
@@ -107,6 +110,7 @@ const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
 
 export default class LongformPlugin extends Plugin {
   pageRecovery!: PageRecovery;
+  revisionLedger!: RevisionLedger;
   // Local mirror of the pluginSettings store
   // since this class does a lot of ad-hoc settings fetching.
   // More efficient than a lot of get() calls.
@@ -222,12 +226,15 @@ export default class LongformPlugin extends Plugin {
     );
 
     this.pageRecovery = new PageRecovery(this.app);
+    this.revisionLedger = new RevisionLedger(this.app);
+    bindRevisionLedger(this.revisionLedger);
 
     addCommands(this);
     this.registerEditorExtension(longformPageExtension);
     this.registerEditorExtension(longformMarginNoteExtension);
     this.registerEditorExtension(longformMissingWordExtension);
     this.registerEditorExtension(longformBibleExtension);
+    this.registerEditorExtension(longformProseExtension);
     this.register(() => {
       document.removeEventListener("longform-open-card", this.openBibleCard);
     });
@@ -262,6 +269,7 @@ export default class LongformPlugin extends Plugin {
           return;
         }
         this.pageRecovery.note(file.path, editor.getValue());
+        this.revisionLedger.note(file.path, editor.getValue());
       })
     );
     this.registerEvent(
@@ -271,11 +279,15 @@ export default class LongformPlugin extends Plugin {
           return;
         }
         void this.pageRecovery.offer(file);
+        void this.app.vault.cachedRead(file).then((text) => {
+          this.revisionLedger.note(file.path, text);
+        });
       })
     );
     this.registerEvent(
       this.app.vault.on("rename", (file, oldPath) => {
         this.pageRecovery.rename(oldPath, file.path);
+        this.revisionLedger.rename(oldPath, file.path);
       })
     );
     this.registerEvent(
@@ -290,6 +302,7 @@ export default class LongformPlugin extends Plugin {
   onunload(): void {
     stopDictation();
     this.pageRecovery?.flush();
+    this.revisionLedger?.flush();
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
       leaf.view.containerEl.querySelector(":scope > .longform-writing-bar")?.remove();
       leaf.view.containerEl.classList.remove(
@@ -793,10 +806,13 @@ export default class LongformPlugin extends Plugin {
             el.style.removeProperty(name);
           }
         }
+        const reading =
+          wantLeaf && get(readerPaths).indexOf(leaf.view.file.path) >= 0;
+        el.classList.toggle("longform-reader", reading);
         syncWritingBar(
           el,
           leaf.view instanceof MarkdownView ? leaf.view : null,
-          wantLeaf
+          wantLeaf && !reading
         );
       }
 

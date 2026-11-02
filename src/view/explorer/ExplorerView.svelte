@@ -13,6 +13,7 @@
   import CaptureView from "../capture/CaptureView.svelte";
   import StructureView from "../architecture/StructureView.svelte";
   import PlotView from "../plot/PlotView.svelte";
+  import RevisionView from "../revision/RevisionView.svelte";
   import { needsMigration } from "src/model/migration";
   import { getContext } from "svelte";
   import Tab from "./Tab.svelte";
@@ -70,6 +71,7 @@
             <Tab tab="Project" />
             <Tab tab="Bible" />
             <Tab tab="Capture" />
+            <Tab tab="Revision" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -98,6 +100,10 @@
           <div class="tab-panel-container">
             <CaptureView />
           </div>
+        {:else if $selectedTab === "Revision"}
+          <div class="tab-panel-container">
+            <RevisionView />
+          </div>
         {:else}
           <div class="tab-panel-container disconnected">
             <CompileView />
@@ -113,6 +119,7 @@
             <Tab tab="Plot" />
             <Tab tab="Bible" />
             <Tab tab="Capture" />
+            <Tab tab="Revision" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -135,6 +142,10 @@
         {:else if $selectedTab === "Capture"}
           <div class="tab-panel-container">
             <CaptureView />
+          </div>
+        {:else if $selectedTab === "Revision"}
+          <div class="tab-panel-container">
+            <RevisionView />
           </div>
         {:else}
           <div class="tab-panel-container">
