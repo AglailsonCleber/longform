@@ -209,6 +209,104 @@ export class LongformSettingsTab extends PluginSettingTab {
           }));
         });
       });
+    new Setting(containerEl)
+      .setName("Manuscript font size")
+      .setDesc("Use a size of your choosing on Longform pages.")
+      .addToggle((cb) => {
+        cb.setValue(settings.manuscriptFont);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            manuscriptFont: value,
+          }));
+        });
+      })
+      .addSlider((cb) => {
+        cb.setLimits(14, 32, 1)
+          .setValue(settings.manuscriptFontSize)
+          .setDynamicTooltip()
+          .onChange((value) => {
+            pluginSettings.update((s) => ({
+              ...s,
+              manuscriptFontSize: value,
+            }));
+          });
+      });
+    new Setting(containerEl)
+      .setName("Stronger contrast")
+      .setDesc("The manuscript text and page sit further apart.")
+      .addToggle((cb) => {
+        cb.setValue(settings.strongContrast);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            strongContrast: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Reduce motion")
+      .setDesc("Longform pages and panes stay still. The system setting is followed as well.")
+      .addToggle((cb) => {
+        cb.setValue(settings.reduceMotion);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            reduceMotion: value,
+          }));
+        });
+      });
+
+    new Setting(containerEl).setName("Suggestions").setHeading();
+    new Setting(containerEl)
+      .setName("Suggestions")
+      .setDesc(
+        "Off by default. A reply is shown beside the passage and is not written into the page. Longform does not choose a model for you."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.suggestions);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            suggestions: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Model address")
+      .setDesc("An OpenAI-compatible address on this computer, or a service whose key you hold.")
+      .addText((cb) => {
+        cb.setPlaceholder("http://127.0.0.1:11434/v1/chat/completions")
+          .setValue(settings.suggestionEndpoint)
+          .onChange((value) => {
+            pluginSettings.update((s) => ({
+              ...s,
+              suggestionEndpoint: value,
+            }));
+          });
+      });
+    new Setting(containerEl)
+      .setName("Model name")
+      .addText((cb) => {
+        cb.setValue(settings.suggestionModel).onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            suggestionModel: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Key")
+      .setDesc("Kept in plugin data, never in the manuscript. Leave this empty for a local model.")
+      .addText((cb) => {
+        cb.inputEl.type = "password";
+        cb.setValue(settings.suggestionKey).onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            suggestionKey: value,
+          }));
+        });
+      });
 
     new Setting(containerEl).setName("Compile").setHeading();
 

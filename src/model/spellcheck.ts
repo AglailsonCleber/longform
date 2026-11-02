@@ -2,6 +2,8 @@ type SpellSession = {
   availableSpellCheckerLanguages?: string[];
   getSpellCheckerLanguages?: () => string[];
   setSpellCheckerLanguages?: (languages: string[]) => void;
+  addWordToSpellCheckerDictionary?: (word: string) => void;
+  removeWordFromSpellCheckerDictionary?: (word: string) => void;
 };
 
 let previousLanguages: string[] | null = null;
@@ -59,4 +61,30 @@ export function applyPortugueseSpellcheck(enabled: boolean): void {
     previousLanguages = session.getSpellCheckerLanguages();
   }
   session.setSpellCheckerLanguages([portuguese]);
+}
+
+let managedWords: string[] = [];
+
+/** Teach the desktop spell checker the book's names and neologisms, and take them back when the book changes. */
+export function syncBookDictionary(words: string[]): void {
+  const session = spellSession();
+  const add = session?.addWordToSpellCheckerDictionary;
+  const remove = session?.removeWordFromSpellCheckerDictionary;
+  if (!add) {
+    managedWords = words.slice();
+    return;
+  }
+  for (const word of managedWords) {
+    if (words.indexOf(word) < 0 && remove) {
+      remove(word);
+    }
+  }
+  for (const word of words) {
+    add(word);
+  }
+  managedWords = words.slice();
+}
+
+export function clearBookDictionary(): void {
+  syncBookDictionary([]);
 }

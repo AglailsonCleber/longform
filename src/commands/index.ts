@@ -48,6 +48,16 @@ import {
   setRevisionMark,
 } from "./revision";
 import { openBesidePage, restoreRecoveredPage } from "./page-beside";
+import {
+  addThisWord,
+  announceThisPage,
+  askThisPassage,
+  backupThisProject,
+  countPortugueseSyllables,
+  decryptThisCopy,
+  encryptThisCopy,
+  exportThisProject,
+} from "./archive";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -110,6 +120,14 @@ const commandBuilders = [
   setRevisionMark,
   proposeChange,
   readAsReader,
+  backupThisProject,
+  exportThisProject,
+  encryptThisCopy,
+  decryptThisCopy,
+  addThisWord,
+  countPortugueseSyllables,
+  announceThisPage,
+  askThisPassage,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

@@ -117,6 +117,21 @@ export interface LongformPluginSettings {
   lightManuscript: boolean;
   /** Mark the writing page as Portuguese so the spell checker can follow it. */
   portuguesePage: boolean;
+  /** Use a chosen size for the manuscript instead of the app font. */
+  manuscriptFont: boolean;
+  /** Manuscript size in pixels when manuscriptFont is on. */
+  manuscriptFontSize: number;
+  /** Stop motion in the Longform page and panes. */
+  reduceMotion: boolean;
+  /** Push the manuscript text and page further apart. */
+  strongContrast: boolean;
+  /** Suggestions stay off until the author turns them on. */
+  suggestions: boolean;
+  /** OpenAI-compatible address. Empty until the author sets a local model or a service. */
+  suggestionEndpoint: string;
+  suggestionModel: string;
+  /** The author's key. It is not written into the manuscript. */
+  suggestionKey: string;
   // DEPRECATED. To be removed in future, needed now for migrations.
   projects: {
     [path: string]: {
@@ -155,6 +170,14 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   pageMargin: 32,
   lightManuscript: false,
   portuguesePage: true,
+  manuscriptFont: false,
+  manuscriptFontSize: 18,
+  reduceMotion: false,
+  strongContrast: false,
+  suggestions: false,
+  suggestionEndpoint: "",
+  suggestionModel: "local",
+  suggestionKey: "",
   projects: {},
   waitForSync: false,
   fallbackWaitEnabled: true,
@@ -191,6 +214,14 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "pageMargin",
   "lightManuscript",
   "portuguesePage",
+  "manuscriptFont",
+  "manuscriptFontSize",
+  "reduceMotion",
+  "strongContrast",
+  "suggestions",
+  "suggestionEndpoint",
+  "suggestionModel",
+  "suggestionKey",
 ];
 
 export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
@@ -220,4 +251,12 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "pageMargin",
     "lightManuscript",
     "portuguesePage",
+    "manuscriptFont",
+    "manuscriptFontSize",
+    "reduceMotion",
+    "strongContrast",
+    "suggestions",
+    "suggestionEndpoint",
+    "suggestionModel",
+    "suggestionKey",
   ];

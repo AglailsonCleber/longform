@@ -303,3 +303,54 @@
   padding: 3rem 2.2rem 4rem;
   background: var(--background-primary);
 }
+
+.longform-leaf.longform-font .cm-editor,
+.longform-leaf.longform-font .markdown-preview-view {
+  font-size: var(--longform-manuscript-font);
+}
+
+.longform-leaf.longform-strong-contrast .cm-editor,
+.longform-leaf.longform-strong-contrast .markdown-reading-view,
+.longform-leaf.longform-strong-contrast .markdown-source-view {
+  background-color: Canvas;
+  color: CanvasText;
+}
+
+.longform-leaf.longform-strong-contrast .cm-line,
+.longform-leaf.longform-strong-contrast .view-header-title {
+  color: CanvasText;
+}
+
+.longform-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .longform-explorer,
+  .longform-explorer *,
+  .longform-leaf,
+  .longform-leaf * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body.longform-reduce-motion .longform-explorer,
+body.longform-reduce-motion .longform-explorer *,
+body.longform-reduce-motion .longform-leaf,
+body.longform-reduce-motion .longform-leaf * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

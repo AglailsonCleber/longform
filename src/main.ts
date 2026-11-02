@@ -54,7 +54,10 @@ import {
 } from "./model/stores";
 import { addCommands } from "./commands";
 import { determineMigrationStatus } from "./model/migration";
-import { applyPortugueseSpellcheck } from "./model/spellcheck";
+import { applyPortugueseSpellcheck, clearBookDictionary, syncBookDictionary } from "./model/spellcheck";
+import { bookDictionary, wordsIn } from "./model/archive";
+import { cardsForProject } from "./model/bible";
+import { removeLiveRegion } from "./view/live-region";
 import {
   PAGE_FORM_CLASSES,
   PAGE_FORM_KEY,
@@ -104,6 +107,10 @@ const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
   "pageMargin",
   "lightManuscript",
   "portuguesePage",
+  "manuscriptFont",
+  "manuscriptFontSize",
+  "reduceMotion",
+  "strongContrast",
 ];
 
 // TODO: Try and abstract away more logic from actual plugin hooks here
@@ -303,6 +310,8 @@ export default class LongformPlugin extends Plugin {
     stopDictation();
     this.pageRecovery?.flush();
     this.revisionLedger?.flush();
+    clearBookDictionary();
+    removeLiveRegion();
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
       leaf.view.containerEl.querySelector(":scope > .longform-writing-bar")?.remove();
       leaf.view.containerEl.classList.remove(
@@ -432,6 +441,7 @@ export default class LongformPlugin extends Plugin {
     });
 
     this.unsubscribeSelectedDraft = selectedDraft.subscribe(async (d) => {
+      this.refreshBookDictionary();
       if (!get(initialized) || !d) {
         return;
       }
@@ -709,6 +719,25 @@ export default class LongformPlugin extends Plugin {
       }
     }
     bibleCards.set(cards);
+    this.refreshBookDictionary();
+  }
+
+  private refreshBookDictionary(): void {
+    const draft = get(selectedDraft);
+    if (!draft) {
+      clearBookDictionary();
+      return;
+    }
+    const file = this.app.vault.getAbstractFileByPath(draft.vaultPath);
+    const frontmatter =
+      file instanceof TFile ? this.app.metadataCache.getFileCache(file)?.frontmatter : undefined;
+    const lists: string[][] = [];
+    for (const card of cardsForProject(get(bibleCards), draft.title)) {
+      if (card.kind === "person" || card.kind === "place" || card.kind === "world") {
+        lists.push(card.names);
+      }
+    }
+    syncBookDictionary(bookDictionary(wordsIn(frontmatter), lists));
   }
 
   private refreshCaptures(): void {
@@ -736,6 +765,7 @@ export default class LongformPlugin extends Plugin {
 
   private styleLongformLeaves(allDrafts: Draft[] = get(drafts)) {
     const modes = pageModeClasses(get(pluginSettings));
+    document.body.classList.toggle("longform-reduce-motion", get(pluginSettings).reduceMotion);
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
       const el = leaf.view.containerEl;
       let pageClassesChanged = false;
@@ -784,6 +814,19 @@ export default class LongformPlugin extends Plugin {
             ? exercisePageForm(capture.form)
             : pageForm(draft ? frontmatter?.[PAGE_FORM_KEY] : undefined);
         const portuguese = wantLeaf && pageSettings.portuguesePage;
+        if (portuguese) {
+          el.setAttribute("lang", "pt-BR");
+        } else {
+          el.removeAttribute("lang");
+        }
+        const sized = wantLeaf && pageSettings.manuscriptFont && pageSettings.manuscriptFontSize > 0;
+        el.classList.toggle("longform-font", sized);
+        if (sized) {
+          el.style.setProperty("--longform-manuscript-font", `${pageSettings.manuscriptFontSize}px`);
+        } else {
+          el.style.removeProperty("--longform-manuscript-font");
+        }
+        el.classList.toggle("longform-strong-contrast", wantLeaf && pageSettings.strongContrast);
         if (el.classList.contains("longform-lang-pt") !== portuguese) {
           el.classList.toggle("longform-lang-pt", portuguese);
           pageClassesChanged = true;
