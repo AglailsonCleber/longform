@@ -28,7 +28,8 @@ export type ExplorerTab =
   | "Structure"
   | "Plot"
   | "Revision"
-  | "Archive";
+  | "Archive"
+  | "Life";
 export const selectedTab = writable<ExplorerTab>("Project");
 
 const statsFor = (

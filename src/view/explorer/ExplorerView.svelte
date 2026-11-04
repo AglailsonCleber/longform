@@ -15,6 +15,7 @@
   import PlotView from "../plot/PlotView.svelte";
   import RevisionView from "../revision/RevisionView.svelte";
   import ArchiveView from "../archive/ArchiveView.svelte";
+  import LifeView from "../literary/LifeView.svelte";
   import { needsMigration } from "src/model/migration";
   import { getContext } from "svelte";
   import Tab from "./Tab.svelte";
@@ -74,6 +75,7 @@
             <Tab tab="Capture" />
             <Tab tab="Revision" />
             <Tab tab="Archive" />
+            <Tab tab="Life" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -110,6 +112,10 @@
           <div class="tab-panel-container">
             <ArchiveView />
           </div>
+        {:else if $selectedTab === "Life"}
+          <div class="tab-panel-container">
+            <LifeView />
+          </div>
         {:else}
           <div class="tab-panel-container disconnected">
             <CompileView />
@@ -127,6 +133,7 @@
             <Tab tab="Capture" />
             <Tab tab="Revision" />
             <Tab tab="Archive" />
+            <Tab tab="Life" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -157,6 +164,10 @@
         {:else if $selectedTab === "Archive"}
           <div class="tab-panel-container">
             <ArchiveView />
+          </div>
+        {:else if $selectedTab === "Life"}
+          <div class="tab-panel-container">
+            <LifeView />
           </div>
         {:else}
           <div class="tab-panel-container">

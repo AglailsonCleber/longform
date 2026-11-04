@@ -58,6 +58,11 @@ import {
   encryptThisCopy,
   exportThisProject,
 } from "./archive";
+import {
+  buildEpubCommand,
+  prepareSubmissionCommand,
+  recordContractCommand,
+} from "./literary";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -128,6 +133,9 @@ const commandBuilders = [
   countPortugueseSyllables,
   announceThisPage,
   askThisPassage,
+  prepareSubmissionCommand,
+  recordContractCommand,
+  buildEpubCommand,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,
