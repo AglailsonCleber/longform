@@ -15,6 +15,7 @@ import {
 import { get, type Unsubscriber } from "svelte/store";
 import { draftForPath, scenePath } from "./scene-navigation";
 import { activeFileWordCountStatus } from "src/view/stores";
+import { resetSessionUnits } from "src/commands/habit";
 import { cloneDeep } from "lodash";
 
 // A lot of the word-counting logic is from
@@ -248,6 +249,7 @@ export class WritingSessionTracker {
     this.cachedLatestSession = newSession;
     this.sessionStartCounts = cloneDeep(wordCounts);
     this.sessionStartDiffs = newSession;
+    resetSessionUnits();
 
     return newSession;
   }

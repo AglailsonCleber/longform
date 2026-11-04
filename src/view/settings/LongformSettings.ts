@@ -388,8 +388,10 @@ export class LongformSettingsTab extends PluginSettingTab {
         });
       });
     new Setting(containerEl)
-      .setName("Session word count goal")
-      .setDesc("A number of words to target for a given writing session.")
+      .setName("Session goal")
+      .setDesc(
+        "A number of words, minutes, lines, or stanzas to target for a given writing session."
+      )
       .addText((cb) => {
         cb.setValue(settings.sessionGoal.toString());
         cb.onChange((value) => {
@@ -400,9 +402,41 @@ export class LongformSettingsTab extends PluginSettingTab {
         });
       });
     new Setting(containerEl)
+      .setName("Session goal unit")
+      .setDesc(
+        "Words for the novel. Minutes for the sitting. Lines or stanzas for the poem."
+      )
+      .addDropdown((cb) => {
+        cb.addOption("words", "words");
+        cb.addOption("minutes", "minutes");
+        cb.addOption("lines", "lines");
+        cb.addOption("stanzas", "stanzas");
+        cb.setValue(settings.sessionGoalUnit ?? "words");
+        cb.onChange((value: "words" | "minutes" | "lines" | "stanzas") => {
+          pluginSettings.update((s) => ({ ...s, sessionGoalUnit: value }));
+        });
+      });
+    new Setting(containerEl)
+      .setName("Reading words per minute")
+      .setDesc(
+        "Used for the Habit tab’s reader-time estimate — how long a reader needs, not how much you produced today."
+      )
+      .addText((cb) => {
+        cb.setValue((settings.readingWordsPerMinute ?? 200).toString());
+        cb.onChange((value) => {
+          const numberValue = +value;
+          if (numberValue && numberValue > 0) {
+            pluginSettings.update((s) => ({
+              ...s,
+              readingWordsPerMinute: numberValue,
+            }));
+          }
+        });
+      });
+    new Setting(containerEl)
       .setName("Goal applies to")
       .setDesc(
-        "You can set your word count goal to target all Longform writing, or you can make each project or scene have its own discrete goal."
+        "You can set your word count goal to target all Longform writing, or you can make each project or scene have its own discrete goal. Applies when the session unit is words."
       )
       .addDropdown((cb) => {
         cb.addOption("all", "words written across all projects");

@@ -88,6 +88,10 @@ export interface LongformPluginSettings {
   showWordCountInStatusBar: boolean;
   startNewSessionEachDay: boolean;
   sessionGoal: number;
+  /** Unit for the session goal: words, minutes, lines, or stanzas. */
+  sessionGoalUnit: "words" | "minutes" | "lines" | "stanzas";
+  /** Words per minute used only for the reader's reading-time estimate. */
+  readingWordsPerMinute: number;
   applyGoalTo: "all" | "project" | "note";
   notifyOnGoal: boolean;
   countDeletionsForGoal: boolean;
@@ -153,6 +157,8 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   showWordCountInStatusBar: true,
   startNewSessionEachDay: true,
   sessionGoal: 500,
+  sessionGoalUnit: "words",
+  readingWordsPerMinute: 200,
   applyGoalTo: "all",
   notifyOnGoal: true,
   countDeletionsForGoal: false,
@@ -194,6 +200,8 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "showWordCountInStatusBar",
   "startNewSessionEachDay",
   "sessionGoal",
+  "sessionGoalUnit",
+  "readingWordsPerMinute",
   "applyGoalTo",
   "notifyOnGoal",
   "countDeletionsForGoal",
@@ -231,6 +239,8 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "showWordCountInStatusBar",
     "startNewSessionEachDay",
     "sessionGoal",
+    "sessionGoalUnit",
+    "readingWordsPerMinute",
     "applyGoalTo",
     "notifyOnGoal",
     "countDeletionsForGoal",

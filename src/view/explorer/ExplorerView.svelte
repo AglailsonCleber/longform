@@ -18,6 +18,7 @@
   import LifeView from "../literary/LifeView.svelte";
   import OutputView from "../output/OutputView.svelte";
   import WorkshopView from "../workshop/WorkshopView.svelte";
+  import HabitView from "../habit/HabitView.svelte";
   import { needsMigration } from "src/model/migration";
   import { getContext } from "svelte";
   import Tab from "./Tab.svelte";
@@ -80,6 +81,7 @@
             <Tab tab="Life" />
             <Tab tab="Output" />
             <Tab tab="Workshop" />
+            <Tab tab="Habit" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -128,6 +130,10 @@
           <div class="tab-panel-container">
             <WorkshopView />
           </div>
+        {:else if $selectedTab === "Habit"}
+          <div class="tab-panel-container">
+            <HabitView />
+          </div>
         {:else}
           <div class="tab-panel-container disconnected">
             <CompileView />
@@ -148,6 +154,7 @@
             <Tab tab="Life" />
             <Tab tab="Output" />
             <Tab tab="Workshop" />
+            <Tab tab="Habit" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -190,6 +197,10 @@
         {:else if $selectedTab === "Workshop"}
           <div class="tab-panel-container">
             <WorkshopView />
+          </div>
+        {:else if $selectedTab === "Habit"}
+          <div class="tab-panel-container">
+            <HabitView />
           </div>
         {:else}
           <div class="tab-panel-container">

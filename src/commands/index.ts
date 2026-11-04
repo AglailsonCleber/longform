@@ -78,6 +78,11 @@ import {
   workshopCommentCommand,
   workshopSuggestCommand,
 } from "./workshop";
+import {
+  setProjectGoalCommand,
+  startSprintCommand,
+  stopSprintCommand,
+} from "./habit";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -162,6 +167,9 @@ const commandBuilders = [
   openWorkshopCommand,
   workshopCommentCommand,
   workshopSuggestCommand,
+  startSprintCommand,
+  stopSprintCommand,
+  setProjectGoalCommand,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

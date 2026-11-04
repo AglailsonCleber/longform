@@ -15,9 +15,12 @@ import {
 } from "src/model/note-utils";
 import { draftForPath } from "src/model/scene-navigation";
 import type { Draft, DraftWordCounts } from "src/model/types";
+import { writingSeconds } from "src/model/habit-store";
 
 // Writable stores
 export const activeFile = writable<TFile | null>(null);
+/** Live lines/stanzas produced this session toward the session goal. */
+export const sessionUnitProgress = writable(0);
 
 export type ExplorerTab =
   | "Scenes"
@@ -31,7 +34,8 @@ export type ExplorerTab =
   | "Archive"
   | "Life"
   | "Output"
-  | "Workshop";
+  | "Workshop"
+  | "Habit";
 export const selectedTab = writable<ExplorerTab>("Project");
 
 const statsFor = (
@@ -65,14 +69,46 @@ export const activeFileWordCountStatus = derived(
 );
 
 export const goalProgress = derived(
-  [selectedDraft, sessions, pluginSettings, activeFile, drafts],
-  ([$selectedDraft, $sessions, $pluginSettings, $activeFile, $drafts]) => {
-    if (!$selectedDraft || $sessions.length === 0 || !$pluginSettings) {
+  [
+    selectedDraft,
+    sessions,
+    pluginSettings,
+    activeFile,
+    drafts,
+    writingSeconds,
+    sessionUnitProgress,
+  ],
+  ([
+    $selectedDraft,
+    $sessions,
+    $pluginSettings,
+    $activeFile,
+    $drafts,
+    $writingSeconds,
+    $sessionUnitProgress,
+  ]) => {
+    if (!$selectedDraft || !$pluginSettings) {
+      return 0;
+    }
+
+    const goal = $pluginSettings.sessionGoal;
+    if (goal <= 0) {
+      return 0;
+    }
+
+    const unit = $pluginSettings.sessionGoalUnit ?? "words";
+    if (unit === "minutes") {
+      return $writingSeconds / 60 / goal;
+    }
+    if (unit === "lines" || unit === "stanzas") {
+      return $sessionUnitProgress / goal;
+    }
+
+    if ($sessions.length === 0) {
       return 0;
     }
 
     const latestSession = $sessions[0];
-    const goal = $pluginSettings.sessionGoal;
 
     if ($pluginSettings.applyGoalTo === "all") {
       return latestSession.total / goal;
@@ -97,7 +133,7 @@ export const goalProgress = derived(
         return 0;
       }
       if (draft.format === "single") {
-        return draftTotals.total;
+        return draftTotals.total / goal;
       } else {
         const sceneTotal = draftTotals.scenes[name] ?? 0;
         return sceneTotal / goal;

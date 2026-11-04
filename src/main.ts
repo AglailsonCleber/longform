@@ -76,6 +76,7 @@ import type { CaptureNote } from "./model/capture";
 import { captures } from "./model/capture-store";
 import { structureRevision } from "./model/architecture-store";
 import { stopDictation } from "./commands/dictation";
+import { flushHabitTimers, noteWritingActivity } from "./commands/habit";
 import { readerPaths } from "./model/revision-store";
 import { longformProseExtension } from "./view/prose-extension";
 import { bindRevisionLedger, RevisionLedger } from "./view/revision-ledger";
@@ -283,8 +284,10 @@ export default class LongformPlugin extends Plugin {
         if (!file || !draftForPath(file.path, get(drafts))) {
           return;
         }
-        this.pageRecovery.note(file.path, editor.getValue());
-        this.revisionLedger.note(file.path, editor.getValue());
+        const text = editor.getValue();
+        this.pageRecovery.note(file.path, text);
+        this.revisionLedger.note(file.path, text);
+        noteWritingActivity(this.app, file.path, text);
       })
     );
     this.registerEvent(
@@ -318,6 +321,7 @@ export default class LongformPlugin extends Plugin {
 
   onunload(): void {
     stopDictation();
+    flushHabitTimers();
     this.pageRecovery?.flush();
     this.revisionLedger?.flush();
     this.literaryLedger?.flush();
