@@ -83,6 +83,28 @@ import {
   startSprintCommand,
   stopSprintCommand,
 } from "./habit";
+import {
+  correctStressCommand,
+  insertFormScaffoldCommand,
+  lookupRhymesCommand,
+  showLineScansionCommand,
+} from "./verse";
+import {
+  editCentralEffectCommand,
+  editMotifsCommand,
+  editStoryKnowledgeCommand,
+  pinStoryEdgesCommand,
+  setStoryLengthCommand,
+  sittingTimeCommand,
+} from "./story";
+import {
+  editFactSheetCommand,
+  editPersonaCommand,
+  markRealPeopleCommand,
+  setColumnCadenceCommand,
+  setDeliveryDueCommand,
+  setVehicleCeilingCommand,
+} from "./chronicle";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -170,6 +192,22 @@ const commandBuilders = [
   startSprintCommand,
   stopSprintCommand,
   setProjectGoalCommand,
+  correctStressCommand,
+  insertFormScaffoldCommand,
+  lookupRhymesCommand,
+  showLineScansionCommand,
+  setStoryLengthCommand,
+  pinStoryEdgesCommand,
+  editStoryKnowledgeCommand,
+  editCentralEffectCommand,
+  editMotifsCommand,
+  sittingTimeCommand,
+  setColumnCadenceCommand,
+  setVehicleCeilingCommand,
+  setDeliveryDueCommand,
+  editPersonaCommand,
+  editFactSheetCommand,
+  markRealPeopleCommand,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

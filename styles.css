@@ -145,6 +145,34 @@
   text-wrap: nowrap;
 }
 
+.longform-leaf.longform-form-verse .cm-editor {
+  position: relative;
+}
+
+.longform-leaf.longform-form-verse .cm-content {
+  padding-left: 2.75rem;
+}
+
+.longform-leaf .longform-sound-alliteration {
+  background-color: rgba(var(--color-blue-rgb, 80, 140, 200), 0.18);
+}
+
+.longform-leaf .longform-sound-assonance {
+  background-color: rgba(var(--color-green-rgb, 80, 160, 100), 0.18);
+}
+
+.longform-leaf .longform-sound-echo {
+  background-color: rgba(var(--color-orange-rgb, 200, 140, 60), 0.18);
+}
+
+.longform-leaf.longform-form-verse[data-longform-fold] .cm-line {
+  opacity: 0.22;
+}
+
+.longform-leaf.longform-form-verse[data-longform-fold] .cm-line.longform-fold-active {
+  opacity: 1;
+}
+
 .longform-leaf.longform-form-column .cm-line {
   text-align: left;
 }

@@ -79,6 +79,7 @@ import { stopDictation } from "./commands/dictation";
 import { flushHabitTimers, noteWritingActivity } from "./commands/habit";
 import { readerPaths } from "./model/revision-store";
 import { longformProseExtension } from "./view/prose-extension";
+import { longformVerseExtension } from "./view/verse-extension";
 import { bindRevisionLedger, RevisionLedger } from "./view/revision-ledger";
 import { bindLiteraryLedger, LiteraryLedger } from "./view/literary-ledger";
 import { bindWorkshopLedger, WorkshopLedger } from "./view/workshop-ledger";
@@ -251,6 +252,7 @@ export default class LongformPlugin extends Plugin {
     this.registerEditorExtension(longformMissingWordExtension);
     this.registerEditorExtension(longformBibleExtension);
     this.registerEditorExtension(longformProseExtension);
+    this.registerEditorExtension(longformVerseExtension);
     this.register(() => {
       document.removeEventListener("longform-open-card", this.openBibleCard);
     });
@@ -860,6 +862,12 @@ export default class LongformPlugin extends Plugin {
             el.classList.toggle(cls, want);
             pageClassesChanged = true;
           }
+        }
+        const foldStanza = Number(frontmatter?.["longform-fold-stanza"]);
+        if (wantLeaf && form === "verse" && foldStanza > 0) {
+          el.dataset.longformFold = String(Math.floor(foldStanza));
+        } else {
+          delete el.dataset.longformFold;
         }
         const measure = wantLeaf ? readingMeasureVars(pageSettings) : null;
         el.classList.toggle("longform-measure", Boolean(measure));

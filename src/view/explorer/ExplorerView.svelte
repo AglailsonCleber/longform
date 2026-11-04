@@ -19,6 +19,9 @@
   import OutputView from "../output/OutputView.svelte";
   import WorkshopView from "../workshop/WorkshopView.svelte";
   import HabitView from "../habit/HabitView.svelte";
+  import VerseView from "../verse/VerseView.svelte";
+  import StoryView from "../story/StoryView.svelte";
+  import ChronicleView from "../chronicle/ChronicleView.svelte";
   import { needsMigration } from "src/model/migration";
   import { getContext } from "svelte";
   import Tab from "./Tab.svelte";
@@ -82,6 +85,9 @@
             <Tab tab="Output" />
             <Tab tab="Workshop" />
             <Tab tab="Habit" />
+            <Tab tab="Verse" />
+            <Tab tab="Story" />
+            <Tab tab="Chronicle" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -134,6 +140,18 @@
           <div class="tab-panel-container">
             <HabitView />
           </div>
+        {:else if $selectedTab === "Verse"}
+          <div class="tab-panel-container">
+            <VerseView />
+          </div>
+        {:else if $selectedTab === "Story"}
+          <div class="tab-panel-container">
+            <StoryView />
+          </div>
+        {:else if $selectedTab === "Chronicle"}
+          <div class="tab-panel-container">
+            <ChronicleView />
+          </div>
         {:else}
           <div class="tab-panel-container disconnected">
             <CompileView />
@@ -155,6 +173,9 @@
             <Tab tab="Output" />
             <Tab tab="Workshop" />
             <Tab tab="Habit" />
+            <Tab tab="Verse" />
+            <Tab tab="Story" />
+            <Tab tab="Chronicle" />
             <Tab tab="Compile" />
           </div>
         </div>
@@ -201,6 +222,18 @@
         {:else if $selectedTab === "Habit"}
           <div class="tab-panel-container">
             <HabitView />
+          </div>
+        {:else if $selectedTab === "Verse"}
+          <div class="tab-panel-container">
+            <VerseView />
+          </div>
+        {:else if $selectedTab === "Story"}
+          <div class="tab-panel-container">
+            <StoryView />
+          </div>
+        {:else if $selectedTab === "Chronicle"}
+          <div class="tab-panel-container">
+            <ChronicleView />
           </div>
         {:else}
           <div class="tab-panel-container">
