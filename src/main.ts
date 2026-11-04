@@ -373,6 +373,13 @@ export default class LongformPlugin extends Plugin {
     if (!_workflows) {
       console.log("[Longform] No workflows found; adding default workflow.");
       _workflows = DEFAULT_WORKFLOWS;
+    } else {
+      _workflows = { ..._workflows };
+      for (const [name, workflow] of Object.entries(DEFAULT_WORKFLOWS)) {
+        if (name !== "Default Workflow" && !_workflows[name]) {
+          _workflows[name] = workflow;
+        }
+      }
     }
 
     const deserializedWorkflows: Record<string, Workflow> = {};

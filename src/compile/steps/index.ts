@@ -6,10 +6,16 @@ import { RemoveStrikethroughsStep } from "./remove-strikethroughs";
 import { StripFrontmatterStep } from "./strip-frontmatter";
 import { WriteToNoteStep } from "./write-to-note";
 import { AddFrontmatterStep } from "./add-frontmatter";
+import { JoinScenesStep } from "./join-scenes";
+import { AddBookOpeningStep } from "./add-book-opening";
+import { ExportFileStep } from "./export-file";
 
 export const BUILTIN_STEPS = [
   AddFrontmatterStep,
+  AddBookOpeningStep,
   ConcatenateTextStep,
+  ExportFileStep,
+  JoinScenesStep,
   PrependTitleStep,
   RemoveCommentsStep,
   RemoveLinksStep,

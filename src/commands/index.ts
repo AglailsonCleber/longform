@@ -63,6 +63,16 @@ import {
   prepareSubmissionCommand,
   recordContractCommand,
 } from "./literary";
+import {
+  editBookOpening,
+  exportAllFormats,
+  exportMarkdownCommand,
+  importDocxCommand,
+  importMarkdownCommand,
+  importScrivenerCommand,
+  installProfessionalOutputs,
+  printAsItWillPrint,
+} from "./output";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -136,6 +146,14 @@ const commandBuilders = [
   prepareSubmissionCommand,
   recordContractCommand,
   buildEpubCommand,
+  editBookOpening,
+  exportMarkdownCommand,
+  exportAllFormats,
+  printAsItWillPrint,
+  installProfessionalOutputs,
+  importMarkdownCommand,
+  importDocxCommand,
+  importScrivenerCommand,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

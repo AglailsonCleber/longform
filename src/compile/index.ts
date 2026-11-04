@@ -7,6 +7,7 @@ import {
 } from "src/model/scene-navigation";
 import { stripMarginNotes } from "src/model/margin-note";
 import { ROLE_KEY, compiles } from "src/model/architecture";
+import { professionalWorkflows } from "src/model/output";
 import type { Draft, SerializedWorkflow } from "src/model/types";
 import {
   CompileStepKind,
@@ -351,4 +352,5 @@ export const DEFAULT_WORKFLOWS: Record<string, SerializedWorkflow> = {
       },
     ],
   },
+  ...professionalWorkflows(),
 };
