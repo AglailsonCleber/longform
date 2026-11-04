@@ -73,6 +73,11 @@ import {
   installProfessionalOutputs,
   printAsItWillPrint,
 } from "./output";
+import {
+  openWorkshopCommand,
+  workshopCommentCommand,
+  workshopSuggestCommand,
+} from "./workshop";
 import { readAloud, stopReading } from "./read-aloud";
 import {
   characterCue,
@@ -154,6 +159,9 @@ const commandBuilders = [
   importMarkdownCommand,
   importDocxCommand,
   importScrivenerCommand,
+  openWorkshopCommand,
+  workshopCommentCommand,
+  workshopSuggestCommand,
   openBesidePage,
   restoreRecoveredPage,
   readAloud,

@@ -80,6 +80,7 @@ import { readerPaths } from "./model/revision-store";
 import { longformProseExtension } from "./view/prose-extension";
 import { bindRevisionLedger, RevisionLedger } from "./view/revision-ledger";
 import { bindLiteraryLedger, LiteraryLedger } from "./view/literary-ledger";
+import { bindWorkshopLedger, WorkshopLedger } from "./view/workshop-ledger";
 import { longformBibleExtension } from "./view/bible-extension";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
@@ -120,6 +121,7 @@ export default class LongformPlugin extends Plugin {
   pageRecovery!: PageRecovery;
   revisionLedger!: RevisionLedger;
   literaryLedger!: LiteraryLedger;
+  workshopLedger!: WorkshopLedger;
   // Local mirror of the pluginSettings store
   // since this class does a lot of ad-hoc settings fetching.
   // More efficient than a lot of get() calls.
@@ -239,6 +241,8 @@ export default class LongformPlugin extends Plugin {
     bindRevisionLedger(this.revisionLedger);
     this.literaryLedger = new LiteraryLedger(this.app);
     bindLiteraryLedger(this.literaryLedger);
+    this.workshopLedger = new WorkshopLedger(this.app);
+    bindWorkshopLedger(this.workshopLedger);
 
     addCommands(this);
     this.registerEditorExtension(longformPageExtension);
@@ -300,6 +304,7 @@ export default class LongformPlugin extends Plugin {
         this.pageRecovery.rename(oldPath, file.path);
         this.revisionLedger.rename(oldPath, file.path);
         this.literaryLedger.rename(oldPath, file.path);
+        this.workshopLedger.rename(oldPath, file.path);
       })
     );
     this.registerEvent(
@@ -316,6 +321,7 @@ export default class LongformPlugin extends Plugin {
     this.pageRecovery?.flush();
     this.revisionLedger?.flush();
     this.literaryLedger?.flush();
+    this.workshopLedger?.flush();
     clearBookDictionary();
     removeLiveRegion();
     this.app.workspace.getLeavesOfType("markdown").forEach((leaf) => {
