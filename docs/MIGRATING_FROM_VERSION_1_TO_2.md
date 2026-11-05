@@ -2,6 +2,8 @@
 
 The 2.0 version of Longform changes the format and location of [index files](./INDEX_FILE.md). It also changes what data it saves locally in plugin storage. This means that the first time you upgrade, Longform will prompt you to migrate your projects.
 
+Projects created now also store `kind` and `draftTitle` inside `longform`. Migration from 1.x does not write `kind`. A project without `kind` keeps every pane tab and every page form. The app reads `draftTitle`. It does not read `draftNumber`.
+
 ## Automated Migration (Recommended)
 
 Migration does the following:

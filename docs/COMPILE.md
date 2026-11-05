@@ -1,6 +1,10 @@
 # Compile
 
-Longform's Compile tab helps you turn a project into a final document. In the tab, you build **workflows** comprising **steps**. You can also write your own **user scripts** in JavaScript to build out fully custom compilation processes; hopefully, though, the built-in steps are sufficient for most use cases. If not, and you'd like to suggest a new step that you think should be included by default, please [suggest it as a GitHub issue](https://github.com/kevboh/longform/issues).
+The **Output** tab is the manuscript you send to a publisher or give to a reader. Poetry, a story, and a chronicle keep their form there. **Export as Markdown**, **Export in a format**, and **Install publisher and reading workflows** live on that tab. Import from a Markdown folder, a DOCX, or a Scrivener project creates notes and does not rewrite what you already have.
+
+The **Compile** tab is the older step workflow. It is still there. In it, you build **workflows** comprising **steps**. You can also write your own **user scripts** in JavaScript. Scripts load from the folder in **Settings → Longform → Compile**. A script error shows in the developer console, not inside the manuscript. **Compile current project with current workflow** uses the open project. **Compile project…** lets you choose the project, the draft, and the workflow.
+
+Before the steps run, Compile removes private margin notes (`%%? … %%`) and skips a piece whose role is **cut**, **variant**, or **appendix**. A `TK` stays in the text. **Remove Comments** can also strip any remaining Markdown comment (`%% … %%`) or HTML comment.
 
 ## Steps
 

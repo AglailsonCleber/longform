@@ -1,21 +1,21 @@
 ## Longform
 
-Longform is a plugin for [Obsidian](https://obsidian.md) that helps you write and edit novels, screenplays, and other long projects. It lets you organize a series of notes, or _scenes_, into an ordered manuscript. It also supports single-note projects for shorter works.
+Longform is a plugin for [Obsidian](https://obsidian.md) for a novel, a poem, a story, a chronicle, or a script. The manuscript stays Markdown. It lets you organize a series of notes, or _scenes_, into an ordered manuscript, and it also supports a single note for a shorter work.
 
 > [!TIP]
 > If you’d like a way to sync, share your manuscripts with others, and edit them on the web check out my other project, [screen.garden](https://screen.garden).
 
 Major features include:
 
+- A project kind chosen at creation. The pane then shows the tabs for that kind. A project with no kind keeps every tab;
 - A dedicated sidebar that collects your projects from across your vault;
 - A [reorderable, nestable list](./docs/MULTIPLE_SCENE_PROJECTS.md) of scenes;
-- Scene/draft/project [word counts](./docs/WORD_COUNTS.md#word-counts-for-projects-drafts-and-scenes);
-- Daily [writing session goals](./docs/WORD_COUNTS.md#writing-sessions-and-word-count-goals) with lots of options to help fit your writing style;
-- A [workflow-based compilation tool](./docs/COMPILE.md) that can create manuscripts from your projects;
-- Support for [single-scene projects](/docs/SINGLE_SCENE_PROJECTS.md) so that your shorter works can use the same workflows and tooling as your longer ones;
-- Plus lots of commands, modals, and menu items to help you manage your work.
+- Scene, draft, and project [word counts](./docs/WORD_COUNTS.md#word-counts-for-projects-drafts-and-scenes), plus a session goal in words, minutes, lines, or stanzas;
+- An **Output** tab for the manuscript you send or give to a reader, and the [Compile](./docs/COMPILE.md) step workflow;
+- [Single-scene projects](./docs/SINGLE_SCENE_PROJECTS.md) for one poem, one story, or one column;
+- A writing page: hidden properties, a current-line highlight, focus, typewriter mode, a chosen page language, and private margin comments whose `%%? … %%` stays hidden until the cursor is on it.
 
-A Getting Started guide follows; there is also reasonably-complete [documentation](./docs/). The full usage guide, in Portuguese, is the [manual](./docs/MANUAL.md).
+The full usage guide, in Portuguese, is the [manual](./docs/MANUAL.md). The command list is [COMMANDS.md](./docs/COMMANDS.md). A short Getting Started follows.
 
 ## Installing
 
@@ -31,7 +31,7 @@ Longform works by searching your vault for any note that contains a frontmatter 
 
 ![Create Longform Project menu item](./docs/res/walkthrough-create-longform-project.png)
 
-2. A `Create Project` modal will appear. This modal lets us choose between Multi- and Single-scene project types. We’re creating a novel, so we’ll stick with Multi. The text under the project type switch explains a little about how each type of project works.
+2. A `Create Project` modal will appear. Choose a kind first: **Novel**, **Poetry**, **Story**, **Chronicle**, or **Script**. Then choose **Multi** or **Single**. A novel suggests **Multi**. The text under the project type switch explains how each type of project works.
 
 3. In the `Title` field, enter your novel’s title. For this example we’ll use `My Great Novel`. The modal tells us the type of project we’re creating and the location of the _Index File_ it will create in our vault. We’ll get into what Index Files are in a moment.
 
@@ -41,7 +41,7 @@ Longform works by searching your vault for any note that contains a frontmatter 
 >
 > You don’t have to use this menu item and modal to create Longform projects. As you will see shortly, Longform projects are one or more notes organized around some YAML frontmatter. You can always create a note yourself somewhere in your vault and use the `Insert Multi-Scene Frontmatter` and `Insert Single-Scene Frontmatter` commands to populate the note—Longform will recognize it automatically. Although not recommended, you can also author the YAML frontmatter manually, too.
 
-4. Click `Create`. Longform has created the promised file. If we switch to the [Longform pane](./docs/THE_LONGFORM_PANE.md) in the sidebar the project is already selected. You should see three tabs: Scenes, Project, and Compile, and Scenes should be selected.
+4. Click `Create`. Longform has created the promised file. Open the Longform pane with **Open Longform pane**. The project is already selected. A multi-scene novel shows **Scenes**, plus **Structure**, **Plot**, **Bible**, **Story**, and the tabs every project has: **Project**, **Capture**, **Revision**, **Habit**, **Workshop**, **Output**, **Life**, **Archive**, and **Compile**. **Scenes** is selected. The picture below is from an earlier pane, so it shows only **Scenes**, **Project**, and **Compile**.
 
 ![The newly-created project in the Longform pane](./docs/res/walkthrough-multi-fresh-pane.png)
 
@@ -62,9 +62,9 @@ This is how Longform tracks your work.
 >
 > You should probably avoid editing the `longform` frontmatter in your index file directly unless you really know what you’re doing. Longform supports direct editing of it and will do its best to sync, but it’s easy to accidentally mess things up. You can always revert your changes, though: Longform will never delete files based on changes in the index file.
 
-7. You’re now ready to write your novel. Keep adding scenes as needed. If you’d like to add structure to your novel you can drag scenes left or right (or use the indent/Unindent commands) to create folders of scenes with parent scenes. [The full documentation for multiple-scene projects](./docs/MULTIPLE_SCENE_PROJECTS.md) might be useful.
+7. You’re now ready to write your novel. Keep adding scenes as needed. Drag a scene left or right, or use **Indent scene** and **Unindent scene**, to nest a part, a chapter, and a scene. [Multiple-scene projects](./docs/MULTIPLE_SCENE_PROJECTS.md) describes that list.
 
-8. When you’re ready to generate a single manuscript for your readers, use the [Compile](./docs/COMPILE.md) feature. Congratulations! You’ve written a novel.
+8. When you’re ready for a manuscript, use **Output** to export it, or [Compile](./docs/COMPILE.md) to run a step workflow.
 
 ### Creating a Short Story
 
@@ -90,7 +90,7 @@ You can rename drafts by right-clicking them in the Project tab and selecting Re
 
 ## Compiling
 
-The Compile tab allows you to create custom workflows that turn your project into a manuscript. See [COMPILE.md](https://github.com/kevboh/longform/blob/main/docs/COMPILE.md) for more.
+**Output** exports the manuscript. The **Compile** tab still builds a workflow of steps. See [COMPILE.md](./docs/COMPILE.md).
 
 > [!TIP]
 > You can find more compile steps for various use cases in the [community collection of compile steps](https://github.com/obsidian-community/longform-compile-steps).

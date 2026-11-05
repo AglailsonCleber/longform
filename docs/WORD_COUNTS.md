@@ -1,16 +1,24 @@
 # Word Counts & Writing Sessions
 
-Longform includes a set of tools to help you count the number of words in your projects and to track your writing sessions as you work toward some number of written words.
+Longform counts the manuscript and tracks a writing session against a goal. Research does not enter the manuscript count. The day’s goal and the book’s goal are separate. The full Portuguese guide is the [manual](./MANUAL.md).
 
 ## Word Counts for Projects, Drafts, and Scenes
 
-Word counts are tracked per project, draft, and scene. You can always check your word counts in the Project tab, and if you turn on the `Show word counts in status bar` setting the word count for the currently-focused project, if applicable, will be shown in the status bar. For performance reasons, word counts are updated on a delay.
+Word counts are tracked per project, draft, and scene. You can check them in the **Habit** tab under **Counts**, and in the Project tab. If you turn on **Show word counts in status bar**, the count for the focused project is shown in the status bar. Counts update on a delay.
 
-The status bar count will show scene (if a multi-scene project) and draft word counts for the given focused pane. Clicking it will show the Project tab of the corresponding project. If the scene and draft have the same number of words, only the draft count will be shown to save space.
+The status bar count shows the scene, when the project has scenes, and the draft. Clicking it opens that project. If the scene and the draft have the same number of words, only the draft count is shown.
 
-## Writing Sessions and Word Count Goals
+## Writing Sessions and Goals
 
-Longform also includes support for writing sessions. Sessions are some length of time in which you are writing against a word count goal. Longform will notify you when you’ve hit your goal. This behavior is customizable via a number of settings.
+A session is the stretch of writing you are counting now. **Start new writing sessions each day** opens a new one each day. **Start new writing session** opens one immediately.
+
+**Session goal** and **Session goal unit** are the target: words, minutes, lines, or stanzas. **Notify on goal reached** tells you when the target is met. **Goal applies to** matters when the unit is words: everything written, each project, or each scene. **Count deletions against goal** treats deleted words as negative, and the session does not go below zero.
+
+**Set project goal** is the book’s own target, with an amount, a unit, and an optional date. It does not replace the session goal.
+
+The **Habit** tab also has a sprint (**Start a writing sprint**, **Stop the writing sprint**) and a calendar of days that contain text. A blank day is a pause. The longest run already made stays.
+
+**Reading words per minute** is only the estimate of how long a reader needs. It is not today’s production.
 
 ## Session Storage
 

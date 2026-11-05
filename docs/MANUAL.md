@@ -1,6 +1,6 @@
 # Manual do Longform
 
-Longform é um plugin do Obsidian para escrever romance, poema, conto e crônica. O manuscrito continua sendo Markdown. O que o ofício precisa — meta, versão, oficina, envio — fica ao lado do texto, em propriedades da nota ou no painel, e não reescreve a prosa.
+Longform é um plugin do Obsidian para escrever romance, poema, conto, crônica e roteiro. O manuscrito continua sendo Markdown. O que o ofício precisa — meta, versão, oficina, envio — fica ao lado do texto, em propriedades da nota ou no painel, e não reescreve a prosa.
 
 A interface está em inglês. Os nomes de abas, botões e comandos abaixo são os que aparecem no app. Os comandos ficam na paleta do Obsidian com o prefixo **Longform:**.
 
@@ -16,7 +16,17 @@ Notas que não pertencem a um projeto Longform ficam de fora do painel, da conta
 
 Clique com o botão direito numa pasta e escolha **Create Longform Project**.
 
-Escolha o tipo antes de criar: **Novel**, **Poetry**, **Story**, **Chronicle** ou **Script**. As abas do painel, a forma da página e os comandos de verso, conto e crônica passam a ser os desse tipo. **Novel** e **Script** sugerem **Multi**. **Poetry**, **Story** e **Chronicle** sugerem **Single**. Dá para trocar: uma coletânea de poemas ou uma série de crônicas usa **Multi**. Um projeto antigo, sem tipo gravado, continua com todas as abas.
+Escolha o tipo antes de criar: **Novel**, **Poetry**, **Story**, **Chronicle** ou **Script**. As abas do painel, a forma da página e os comandos de verso, conto e crônica passam a ser os desse tipo. **Novel** e **Script** sugerem **Multi**. **Poetry**, **Story** e **Chronicle** sugerem **Single**. Dá para trocar: uma coletânea de poemas ou uma série de crônicas usa **Multi**. Um projeto antigo, sem tipo gravado, continua com todas as abas e com as quatro formas de página.
+
+Todo projeto tem **Project**, **Capture**, **Structure**, **Revision**, **Archive**, **Life**, **Output**, **Workshop**, **Habit** e **Compile**. **Scenes** só aparece em **Multi**. O tipo acrescenta:
+
+| Tipo | Abas do tipo | Forma da página |
+| --- | --- | --- |
+| **Novel** | **Plot**, **Bible**, **Story** | **Prose** |
+| **Poetry** | **Verse** | **Verse** |
+| **Story** | **Plot**, **Bible**, **Story** | **Prose** |
+| **Chronicle** | **Bible**, **Chronicle** | **Column** e **Prose** |
+| **Script** | **Plot**, **Bible** | **Script** |
 
 - **Multi** — o plugin cria um arquivo índice. Cada cena é uma nota. A ordem das cenas mora no índice.
 - **Single** — uma nota só é o projeto inteiro.
@@ -32,12 +42,13 @@ Para apagar o projeto inteiro, use **Delete project** na aba **Project**, ou o c
 Na aba **Scenes**:
 
 - Digite o título no campo de cena nova e confirme. A nota abre pronta para escrever.
-- Arraste para reordenar. Arraste para a direita, ou use **Indent scene** / **Unindent scene**, para aninhar capítulo, parte e cena.
+- Arraste para reordenar. Arraste para a direita, ou use **Indent scene** / **Unindent scene**, para aninhar capítulo, parte e cena. **Show scene numbers in Scenes tab** numera essas peças, por exemplo `1.1.2`.
+- **New scene template**, em **Settings → Longform → Composition**, é o modelo das cenas novas. Cada projeto pode trocar o modelo em **Project**. **Write scene index to frontmatter** grava o índice e o número da cena nas propriedades da nota.
 - **Previous scene** e **Next scene** saltam na ordem do manuscrito. As variantes “at indent level” ficam no mesmo nível.
 - **Jump to scene in current project** abre uma cena pelo nome.
 - **Reveal current project in navigation** mostra a pasta no explorador de arquivos.
 
-Cena cortada, variante e apêndice continuam no projeto e saem do manuscrito compilado. Isso se marca na aba **Structure**, no papel da peça.
+Cena cortada, variante e apêndice continuam no projeto. A compilação e a leitura contínua pulam essas peças. A exportação de **Output** não pula. O papel se marca na aba **Structure**.
 
 ## A página
 
@@ -47,18 +58,25 @@ Em **Settings → Longform → Page**:
 
 | Opção | O que faz |
 | --- | --- |
-| **Hide note properties** | Esconde o bloco de propriedades no topo da nota. As propriedades continuam no arquivo. O mesmo efeito está no comando **Hide note properties**. |
-| **Highlight current line** | Acende a linha do cursor. |
+| **Hide note properties** | Esconde o bloco de propriedades no topo da nota, na edição e na leitura. As propriedades continuam no arquivo. O comando **Hide note properties** faz o mesmo. |
+| **Highlight current line** | Acende a linha do cursor. Com a opção desligada, a linha não ganha cor. |
 | **Focus mode** | Esmaece os outros parágrafos. Uma linha em branco marca o fim do parágrafo. |
 | **Typewriter mode** | Mantém a linha do cursor no centro. |
-| **Reading measure** | Coluna estreita, com largura, entrelinha e margem próprias. |
-| **Light manuscript** | A página de escrita usa o tema oposto ao do aplicativo. |
-| **Page language** | Língua da nota de um projeto. O corretor usa o dicionário dessa língua, quando instalado. O ditado e a leitura em voz alta seguem a mesma escolha. **Off** deixa a página sem marca. |
-| Fonte e contraste | Tamanho do manuscrito e contraste mais forte, quando ligados. |
+| **Reading measure** | Coluna estreita. As notas de fora do projeto ficam na largura normal. |
+| **Column width** | Largura do texto, em caracteres, de 40 a 100. |
+| **Line height** | Entrelinha, de 1,2 a 2,4. O padrão é 1,7. |
+| **Page margin** | Recuo horizontal da coluna, em pixels, de 0 a 120. |
+| **Opposite theme** | A página de escrita usa o tema oposto ao do aplicativo: clara quando o app está escuro, escura quando o app está claro. |
+| **Page language** | Língua da nota. As opções são **Off**, **Portuguese (Brazil)**, **Portuguese (Portugal)**, **English**, **Spanish**, **French**, **Italian** e **German**. O corretor usa o dicionário dessa língua, quando instalado. O ditado e a leitura em voz alta seguem a mesma escolha. **Off** deixa a página sem marca para o corretor; ditado e leitura, nesse caso, usam português. A contagem de sílabas do verso continua em português. |
+| **Manuscript font size** | Tamanho próprio do manuscrito, de 14 a 32, quando o interruptor está ligado. |
+| **Stronger contrast** | O texto e a página se separam mais. |
+| **Reduce motion** | Páginas e painéis do Longform ficam parados. A opção do sistema também vale. |
 
 Atalhos equivalentes: **Toggle current line highlight**, **Toggle focus mode**, **Toggle typewriter mode**.
 
 ### Forma da página
+
+A forma possível depende do tipo. Poesia só tem verso. Romance e conto só têm prosa. Roteiro só tem a forma de roteiro. Crônica tem coluna e prosa. Projeto sem tipo tem as quatro.
 
 No painel **Private comments**, em **Page form**, ou pelos comandos:
 
@@ -69,12 +87,12 @@ No painel **Private comments**, em **Page form**, ou pelos comandos:
 
 Com a forma de verso, **New stanza** abre uma estrofe (linha em branco e verso novo). No roteiro: **Insert scene heading**, **Insert character cue**, **Insert parenthetical**.
 
-### Português na página
+### Marcas na nota
 
 Clique com o botão direito na nota. No submenu **Insert** (**Inserir**), uma seção reúne:
 
 - **Insert dialogue dash** — travessão de fala.
-- **Insert margin note** — comentário privado na margem. Na edição, o código `%%? … %%` fica oculto e só aparece com o cursor em cima, como o endereço de um link. Não entra na saída.
+- **Insert margin note** — comentário privado na margem. Na edição, o código `%%? … %%` fica oculto e só aparece com o cursor em cima, como o endereço de um link. A compilação e a leitura contínua tiram esse código. A exportação de **Output** leva o código junto.
 - **Insert quotes** — aspas no trecho selecionado, ou um par vazio com o cursor no meio.
 - **Insert missing word** — um `TK` pesquisável no lugar da palavra que ainda não veio.
 
@@ -115,7 +133,7 @@ Cada peça pode ter sinopse, estado, ponto de vista, elenco, unidade (livro, par
 
 ## Enredo
 
-Aba **Plot**.
+Aba **Plot**. Aparece em **Novel**, **Story**, **Script** e em projeto sem tipo.
 
 - **Scenes** — propósito da cena, mudança, tensão, distância do narrador (perto, relato, câmera).
 - **Threads** — fios que atravessam o livro.
@@ -131,7 +149,7 @@ Aba **Plot**.
 
 ## Bíblia
 
-Aba **Bible**. Fichas de pessoa, lugar, coisa e mundo.
+Aba **Bible**. Aparece em **Novel**, **Story**, **Chronicle**, **Script** e em projeto sem tipo. Fichas de pessoa, lugar, coisa e mundo.
 
 - Criar e abrir fichas pelo painel.
 - **Open card at cursor** abre a ficha do nome sob o cursor.
@@ -143,9 +161,9 @@ Nomes da bíblia também alimentam o dicionário do livro na aba **Archive**, pa
 
 ## Verso
 
-Aba **Verse**. Antes, ponha a nota em forma de verso.
+Aba **Verse**. Aparece em **Poetry** e em projeto sem tipo. A forma da página já nasce em verso.
 
-- **Classical** e **Phonetic** — contagem de sílabas na margem e na lista. O modo fonético aplica ditongo, hiato, sinérese e elisão do português. Não é a régua do inglês.
+- **Classical** e **Phonetic** — contagem de sílabas na margem e na lista. O modo fonético aplica ditongo, hiato, sinérese e elisão do português. A conta não muda quando **Page language** é outra língua.
 - **This line** — sílabas do verso em que está o cursor. O mesmo que **Count syllables on this line**.
 - **Correct stress** — a tonicidade sugerida pode errar. A correção fica na palavra (**Correct verse stress**).
 - A letra ao lado do verso é a rima: maiúscula para perfeita, família toante quando o som das vogais coincide.
@@ -161,7 +179,7 @@ A exportação em **Output** preserva quebra de verso. Não transforma verso em 
 
 ## Conto
 
-Aba **Story**. O conto tem teto próprio. Não herda a meta de um romance.
+Aba **Story**. Aparece em **Novel**, **Story** e em projeto sem tipo. O conto tem teto próprio. Não herda a meta de um romance.
 
 - **Micro**, **Flash**, **Story**, **Novelette** — piso e teto de palavras da peça (**Set short-story length**). O painel avisa se passou do teto ou não chegou ao piso.
 - **Pin edges** — guarda o primeiro e o último parágrafos enquanto o meio é reescrito (**Pin opening and closing paragraphs**).
@@ -174,7 +192,7 @@ Aba **Story**. O conto tem teto próprio. Não herda a meta de um romance.
 
 ## Crônica
 
-Aba **Chronicle**. A crônica tem prazo, veículo e fato. Não precisa de arco de romance.
+Aba **Chronicle**. Aparece em **Chronicle** e em projeto sem tipo. A crônica tem prazo, veículo e fato. Não precisa de arco de romance.
 
 - **Weekly**, **Biweekly**, **One-off** — a grade da coluna. O buraco aparece antes de alguém cobrar (**Set column cadence**).
 - **Series & desk** — nome da série e editoria.
@@ -215,6 +233,8 @@ Em **Settings → Word Counts & Sessions**:
 - **Goal applies to** — quando a unidade é palavras: tudo o que foi escrito, cada projeto, ou cada cena.
 - **Count deletions against goal** — apagar conta como negativo, sem passar de zero.
 - **Start new writing sessions each day** — sessão nova a cada dia. **Start new writing session** abre uma na hora.
+- **Sessions to keep** — quantas sessões ficam guardadas.
+- **Store session data** — no `data.json` do plugin, num `.json` da pasta do plugin, ou num arquivo do vault (**Session storage file**).
 - **Reading words per minute** — só para a estimativa de quem vai ler, não para o que você produziu hoje.
 
 No painel:
@@ -279,19 +299,21 @@ Aba **Archive**.
 
 ## O que não entra no livro
 
-Isto fica fora da compilação, de propósito:
+A compilação e **Read through** pulam a peça com papel **cut**, **variant** ou **appendix**, e tiram o comentário de margem `%%? … %%`.
 
-- Pesquisa e inbox.
-- Comentário de margem e `TK`.
-- Cena cortada, variante e apêndice.
-- Cópia congelada de oficina ou de envio.
-- Propostas recusadas e versões nomeadas. Elas existem para voltar, não para ir ao prelo.
+A exportação da aba **Output** junta as cenas como estão na nota. O código do comentário e o `TK` vão junto, e o papel de corte não tira a cena dessa exportação.
+
+O `TK` permanece no texto da compilação também. Ele existe para ser achado e trocado.
+
+Pesquisa e inbox ficam de fora porque não são cenas do manuscrito. A cópia congelada de oficina ou de envio é outro arquivo. Proposta recusada e versão nomeada não substituem a prosa atual.
 
 ## Propriedades
 
 Quase tudo o que o painel grava é uma propriedade ao lado do bloco `longform`, no índice ou na cena. **Hide note properties** só esconde esse bloco na tela. Apagar a propriedade na nota apaga o dado.
 
 Não edite o bloco `longform` para mudar ordem de cenas, papel ou forma. Use as abas. Com **Hide note properties** ligado, o bloco e o YAML do topo ficam fora da visualização de edição e da de leitura. As propriedades continuam no arquivo. Para vê-las, desligue a opção.
+
+Em **Settings → Longform → Troubleshooting**, **Wait for Obsidian Sync** segura o plugin até a primeira sincronização terminar. **Enable fallback wait** e **Fallback wait time** esperam os segundos indicados quando o estado da sincronização não aparece.
 
 ## Um dia de trabalho
 

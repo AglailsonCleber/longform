@@ -2,7 +2,9 @@
 
 In Longform, a project can either be [single-scene](./SINGLE_SCENE_PROJECTS.md) or multi-scene. Multi-scene projects order a set of notes that live in the same folder. These notes are referred to as _scenes_.
 
-Multi-scene projects have a `Scenes` tab. This tab gives you a lot of features to manage your work as it grows.
+Creating a project starts with a kind: **Novel**, **Poetry**, **Story**, **Chronicle**, or **Script**. Novel and script suggest **Multi**. A collection of poems or a series of columns can still be multi-scene. The kind decides the other tabs and the page forms. A project with no `kind` keeps every tab. See the [manual](./MANUAL.md).
+
+Multi-scene projects have a **Scenes** tab.
 
 ## Scene Ordering
 
@@ -43,7 +45,7 @@ Longform takes advantage of YAML’s syntax for nested arrays to “indent” th
 There are two ways to change the indentation level of a scene:
 
 1. With the mouse, by dragging left and right on a scene.
-2. With the “Indent Scene” and “Unindent Scene” commands. These commands are only available if you are currently editing a scene.
+2. With the **Indent scene** and **Unindent scene** commands. These commands are only available if you are currently editing a scene.
 
 An important note about scene indentation and nesting is that, because your scene list does not directly correspond to a file system, your **indentation does not need to look like a file hierarchy**. For example, this is totally valid in Longform:
 
@@ -61,7 +63,7 @@ scenes:
 
 What does this mean? Who knows! It’s your project, organize it how you want.
 
-Of note, Longform includes a documented [API](https://github.com/kevboh/longform/blob/main/src/api/LongformAPI.ts) that can parse and create these YAML lists.
+Of note, [`LongformAPI`](../src/api/LongformAPI.ts) can parse and create these YAML lists.
 
 ## Unknown Scenes & Ignored Scenes
 
