@@ -2,12 +2,14 @@ export const PAGE_MODE_CLASSES = [
   "longform-highlight-line",
   "longform-focus",
   "longform-typewriter",
+  "longform-hide-properties",
 ] as const;
 
 export type PageModeSettings = {
   highlightCurrentLine: boolean;
   focusMode: boolean;
   typewriterMode: boolean;
+  hideProperties: boolean;
 };
 
 export const MEASURE_WIDTH = { min: 40, max: 100, fallback: 66 };
@@ -95,6 +97,9 @@ export function pageModeClasses(settings: PageModeSettings): string[] {
   }
   if (settings.typewriterMode) {
     classes.push("longform-typewriter");
+  }
+  if (settings.hideProperties) {
+    classes.push("longform-hide-properties");
   }
   return classes;
 }

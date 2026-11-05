@@ -86,6 +86,20 @@ export class LongformSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl).setName("Page").setHeading();
     new Setting(containerEl)
+      .setName("Hide note properties")
+      .setDesc(
+        "On notes inside a Longform project, hide the properties block at the top of the page. The properties stay in the file."
+      )
+      .addToggle((cb) => {
+        cb.setValue(settings.hideProperties);
+        cb.onChange((value) => {
+          pluginSettings.update((s) => ({
+            ...s,
+            hideProperties: value,
+          }));
+        });
+      });
+    new Setting(containerEl)
       .setName("Highlight current line")
       .setDesc("In a Longform note, tint the line the cursor is on.")
       .addToggle((cb) => {

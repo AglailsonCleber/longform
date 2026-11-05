@@ -118,6 +118,7 @@ import {
 } from "./page-form";
 import {
   toggleFocusMode,
+  toggleHideProperties,
   toggleHighlightCurrentLine,
   toggleTypewriterMode,
 } from "./page-mode";
@@ -143,6 +144,7 @@ const commandBuilders = [
   toggleHighlightCurrentLine,
   toggleFocusMode,
   toggleTypewriterMode,
+  toggleHideProperties,
   insertMarginNote,
   listMarginNotes,
   showPrivateComments,

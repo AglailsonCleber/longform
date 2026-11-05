@@ -28,6 +28,10 @@
   opacity: 1;
 }
 
+.longform-leaf.longform-hide-properties .metadata-container {
+  display: none;
+}
+
 .longform-leaf.longform-highlight-line .cm-line.longform-current-line,
 .longform-leaf.longform-focus .cm-line.longform-current-line {
   background-color: var(--background-modifier-hover);

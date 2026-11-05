@@ -103,6 +103,7 @@ import {
 const LONGFORM_LEAF_CLASS = "longform-leaf";
 const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
   "highlightCurrentLine",
+  "hideProperties",
   "focusMode",
   "typewriterMode",
   "readingMeasure",

@@ -105,6 +105,8 @@ export interface LongformPluginSettings {
   writeProperty: boolean;
   /** Accent the cursor line in Longform notes. */
   highlightCurrentLine: boolean;
+  /** Hide the properties block on notes that belong to a project. */
+  hideProperties: boolean;
   /** Dim every paragraph except the one being written. */
   focusMode: boolean;
   /** Keep the cursor line vertically centered. */
@@ -168,6 +170,7 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   sceneTemplate: null,
   writeProperty: false,
   highlightCurrentLine: false,
+  hideProperties: false,
   focusMode: false,
   typewriterMode: false,
   readingMeasure: false,
@@ -214,6 +217,7 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "fallbackWaitTime",
   "writeProperty",
   "highlightCurrentLine",
+  "hideProperties",
   "focusMode",
   "typewriterMode",
   "readingMeasure",
@@ -253,6 +257,7 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "fallbackWaitTime",
     "writeProperty",
     "highlightCurrentLine",
+    "hideProperties",
     "focusMode",
     "typewriterMode",
     "readingMeasure",

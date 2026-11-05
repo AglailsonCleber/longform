@@ -73,8 +73,17 @@ describe("page mode classes", () => {
         highlightCurrentLine: true,
         focusMode: false,
         typewriterMode: true,
+        hideProperties: false,
       })
     ).toEqual(["longform-highlight-line", "longform-typewriter"]);
+    expect(
+      pageModeClasses({
+        highlightCurrentLine: false,
+        focusMode: false,
+        typewriterMode: false,
+        hideProperties: true,
+      })
+    ).toEqual(["longform-hide-properties"]);
   });
 });
 

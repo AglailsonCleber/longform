@@ -37,3 +37,8 @@ export const toggleTypewriterMode = togglePageMode(
   "typewriterMode",
   "Toggle typewriter mode"
 );
+
+export const toggleHideProperties = togglePageMode(
+  "hideProperties",
+  "Hide note properties"
+);
