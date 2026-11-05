@@ -15,7 +15,7 @@ Major features include:
 - Support for [single-scene projects](/docs/SINGLE_SCENE_PROJECTS.md) so that your shorter works can use the same workflows and tooling as your longer ones;
 - Plus lots of commands, modals, and menu items to help you manage your work.
 
-A Getting Started guide follows; there is also reasonably-complete [documentation](./docs/).
+A Getting Started guide follows; there is also reasonably-complete [documentation](./docs/). The full usage guide, in Portuguese, is the [manual](./docs/MANUAL.md).
 
 ## Installing
 
