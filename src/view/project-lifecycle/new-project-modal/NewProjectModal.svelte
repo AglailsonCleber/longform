@@ -2,8 +2,16 @@
   import { normalizePath, type TFolder } from "obsidian";
   import { getContext } from "svelte";
 
+  import {
+    defaultFormat,
+    kindLabel,
+    PROJECT_KINDS,
+    type ProjectKind,
+  } from "src/model/project-kind";
+
   export let parent: TFolder;
-  let type: "scenes" | "single" = "scenes";
+  let kind: ProjectKind = "novel";
+  let type: "scenes" | "single" = defaultFormat(kind);
 
   let title: string;
   let valid = false;
@@ -20,17 +28,32 @@
     }
   }
 
+  function chooseKind(next: ProjectKind) {
+    kind = next;
+    type = defaultFormat(next);
+  }
+
   const createProject: (
     format: "scenes" | "single",
     title: string,
-    path: string
+    path: string,
+    kind: ProjectKind
   ) => Promise<void> = getContext("createProject");
   function onCreateProject() {
-    createProject(type, title, draftPath);
+    createProject(type, title, draftPath, kind);
   }
 </script>
 
 <div>
+  <div class="switch-container kind-list">
+    {#each PROJECT_KINDS as option (option.id)}
+      <button
+        type="button"
+        class:selected={kind === option.id}
+        on:click={() => chooseKind(option.id)}>{option.label}</button
+      >
+    {/each}
+  </div>
   <div class="switch-container">
     <button
       type="button"
@@ -84,9 +107,8 @@
   <div>
     {#if valid}
       <p class="create-project-prompt">
-        You are creating a <b
-          >{type === "scenes" ? "multi-scene" : "single-scene"} project</b
-        >
+        You are creating a <b>{kindLabel(kind)}</b>
+        <b>{type === "scenes" ? "multi-scene" : "single-scene"} project</b>
         at
         <span class="target-path">{draftPath}</span>
       </p>
@@ -121,6 +143,16 @@
   .switch-container button.selected {
     background-color: var(--interactive-accent);
     color: var(--text-on-accent);
+  }
+
+  .kind-list {
+    flex-wrap: wrap;
+    gap: var(--size-4-1);
+    margin-bottom: var(--size-4-3);
+  }
+
+  .kind-list button {
+    border-radius: var(--radius-s);
   }
 
   .switch-container button {

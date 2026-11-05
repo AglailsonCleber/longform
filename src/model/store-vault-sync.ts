@@ -23,6 +23,7 @@ import {
   setDraftOnFrontmatterObject,
 } from "src/model/draft-utils";
 import { fileNameFromPath } from "./note-utils";
+import { projectKind } from "./project-kind";
 import { findScene, sceneFolderPath, scenePath } from "./scene-navigation";
 
 type FileWithMetadata = {
@@ -456,6 +457,7 @@ export class StoreVaultSync {
     }
     const workflow = longformEntry["workflow"] ?? null;
     const draftTitle = longformEntry["draftTitle"] ?? null;
+    const kind = projectKind(longformEntry["kind"]);
 
     if (format === "scenes") {
       let rawScenes: any = longformEntry["scenes"] ?? [];
@@ -541,6 +543,7 @@ export class StoreVaultSync {
           unknownFiles,
           sceneTemplate,
           workflow,
+          kind,
         },
         dirty,
       };
@@ -553,6 +556,7 @@ export class StoreVaultSync {
           draftTitle,
           vaultPath,
           workflow,
+          kind,
         },
         dirty: false,
       };

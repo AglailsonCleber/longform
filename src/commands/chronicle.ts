@@ -23,13 +23,15 @@ import {
 import { craftTick } from "src/model/craft-store";
 import { draftForPath } from "src/model/scene-navigation";
 import { drafts } from "src/model/stores";
+import { explorerTabs } from "src/model/project-kind";
 import { AskTextModal } from "src/view/revision/revision-modals";
 
 import type { CommandBuilder } from "./types";
 
 function activeFile(app: App): TFile | null {
   const view = app.workspace.getActiveViewOfType(MarkdownView);
-  if (!view?.file || !draftForPath(view.file.path, get(drafts))) {
+  const draft = view.file ? draftForPath(view.file.path, get(drafts)) : null;
+  if (!view?.file || !draft || explorerTabs(draft).indexOf("Chronicle") < 0) {
     return null;
   }
   return view.file;

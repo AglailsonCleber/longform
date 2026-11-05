@@ -16,8 +16,10 @@ Notas que não pertencem a um projeto Longform ficam de fora do painel, da conta
 
 Clique com o botão direito numa pasta e escolha **Create Longform Project**.
 
-- **Multi** — romance, coletânea, série de crônicas. O plugin cria um arquivo índice. Cada cena é uma nota. A ordem das cenas mora no índice.
-- **Single** — conto, poema, crônica avulsa. Uma nota só é o projeto inteiro.
+Escolha o tipo antes de criar: **Novel**, **Poetry**, **Story**, **Chronicle** ou **Script**. As abas do painel, a forma da página e os comandos de verso, conto e crônica passam a ser os desse tipo. **Novel** e **Script** sugerem **Multi**. **Poetry**, **Story** e **Chronicle** sugerem **Single**. Dá para trocar: uma coletânea de poemas ou uma série de crônicas usa **Multi**. Um projeto antigo, sem tipo gravado, continua com todas as abas.
+
+- **Multi** — o plugin cria um arquivo índice. Cada cena é uma nota. A ordem das cenas mora no índice.
+- **Single** — uma nota só é o projeto inteiro.
 
 Também dá para criar o índice à mão com **Insert multi-scene frontmatter** ou **Insert single-scene frontmatter**.
 

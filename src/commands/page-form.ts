@@ -11,6 +11,7 @@ import {
 import type { PageForm } from "src/model/page-form";
 import { draftForPath } from "src/model/scene-navigation";
 import { drafts } from "src/model/stores";
+import { pageFormsForKind } from "src/model/project-kind";
 
 import type { CommandBuilder } from "./types";
 
@@ -22,13 +23,25 @@ function longformFile(view: MarkdownView | MarkdownFileInfo): TFile | null {
   return file;
 }
 
+function allowsForm(view: MarkdownView | MarkdownFileInfo, form: PageForm): boolean {
+  const file = view.file;
+  if (!file) {
+    return false;
+  }
+  const draft = draftForPath(file.path, get(drafts));
+  if (!draft) {
+    return false;
+  }
+  return pageFormsForKind(draft.kind).indexOf(form) >= 0;
+}
+
 function setForm(form: PageForm, name: string): CommandBuilder {
   return (plugin) => ({
     id: `longform-form-${form}`,
     name,
     editorCheckCallback(checking, _editor, view) {
       const file = longformFile(view);
-      if (!file) {
+      if (!file || !allowsForm(view, form)) {
         return false;
       }
       if (checking) {
@@ -48,7 +61,7 @@ export const newStanza: CommandBuilder = () => ({
   id: "longform-new-stanza",
   name: "New stanza",
   editorCheckCallback(checking, editor, view) {
-    if (!longformFile(view)) {
+    if (!longformFile(view) || !allowsForm(view, "verse")) {
       return false;
     }
     if (checking) {
@@ -62,7 +75,7 @@ export const sceneHeading: CommandBuilder = () => ({
   id: "longform-scene-heading",
   name: "Insert scene heading",
   editorCheckCallback(checking, editor, view) {
-    if (!longformFile(view)) {
+    if (!longformFile(view) || !allowsForm(view, "script")) {
       return false;
     }
     if (checking) {
@@ -76,7 +89,7 @@ export const characterCue: CommandBuilder = () => ({
   id: "longform-character-cue",
   name: "Insert character cue",
   editorCheckCallback(checking, editor, view) {
-    if (!longformFile(view)) {
+    if (!longformFile(view) || !allowsForm(view, "script")) {
       return false;
     }
     if (checking) {
@@ -90,7 +103,7 @@ export const parenthetical: CommandBuilder = () => ({
   id: "longform-parenthetical",
   name: "Insert parenthetical",
   editorCheckCallback(checking, editor, view) {
-    if (!longformFile(view)) {
+    if (!longformFile(view) || !allowsForm(view, "script")) {
       return false;
     }
     if (checking) {

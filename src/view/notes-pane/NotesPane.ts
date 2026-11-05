@@ -17,6 +17,7 @@ import {
   pageForm,
   setNoteForm,
 } from "src/model/page-form";
+import { pageFormsForKind } from "src/model/project-kind";
 import type { PageForm } from "src/model/page-form";
 import { draftForPath, scenePath } from "src/model/scene-navigation";
 import { drafts, selectedDraft } from "src/model/stores";
@@ -65,6 +66,7 @@ export class NotesPane extends ItemView {
         missingWords: [] as PrivateComment[],
         project: "",
         form: "prose" as PageForm,
+        forms: ["prose", "verse", "column", "script"] as PageForm[],
         onOpen: (comment: PrivateComment) => {
           void this.openPlace(comment);
         },
@@ -183,6 +185,7 @@ export class NotesPane extends ItemView {
       missingWords,
       project: draft.title,
       form: this.openForm(),
+      forms: pageFormsForKind(draft.kind),
     });
   }
 

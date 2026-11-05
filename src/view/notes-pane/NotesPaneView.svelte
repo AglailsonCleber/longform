@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { PAGE_FORMS } from "src/model/page-form";
   import type { PageForm } from "src/model/page-form";
 
   import type { PrivateComment } from "./NotesPane";
@@ -8,6 +7,7 @@
   export let missingWords: PrivateComment[] = [];
   export let project = "";
   export let form: PageForm = "prose";
+  export let forms: PageForm[] = ["prose", "verse", "column", "script"];
   export let onOpen: (comment: PrivateComment) => void = () => {};
   export let onForm: (form: PageForm) => void = () => {};
   export let onStanza: () => void = () => {};
@@ -44,7 +44,7 @@
     <p class="longform-notes-empty">Open a Longform note.</p>
   {:else}
     <div class="longform-form-bar">
-      {#each PAGE_FORMS as item (item)}
+      {#each forms as item (item)}
         <button
           type="button"
           class="longform-notes-item"

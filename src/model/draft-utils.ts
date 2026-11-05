@@ -4,6 +4,8 @@ import { get, type Writable } from "svelte/store";
 import type { Draft, IndentedScene, MultipleSceneDraft } from "./types";
 import { scenePath } from "src/model/scene-navigation";
 import { createNoteWithPotentialTemplate } from "./note-utils";
+import { defaultPageForm } from "./project-kind";
+import { setNoteForm } from "./page-form";
 import { pluginSettings } from "./stores";
 
 export function draftTitle(draft: Draft): string {
@@ -34,6 +36,10 @@ export async function createScene(
 
   if (open) {
     app.workspace.openLinkText(path, "/", false);
+  }
+  const form = defaultPageForm(draft.kind);
+  if (form !== "prose") {
+    await setNoteForm(app, note, form);
   }
 }
 
@@ -96,6 +102,9 @@ export function setDraftOnFrontmatterObject(
   }
   if (draft.workflow) {
     obj["longform"]["workflow"] = draft.workflow;
+  }
+  if (draft.kind) {
+    obj["longform"]["kind"] = draft.kind;
   }
 
   if (draft.format === "scenes") {

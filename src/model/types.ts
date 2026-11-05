@@ -6,6 +6,8 @@ export type IndentedScene = {
   indent: number;
 };
 
+export type ProjectKind = "novel" | "poetry" | "story" | "chronicle" | "script";
+
 export type MultipleSceneDraft = {
   format: "scenes";
   title: string;
@@ -13,6 +15,8 @@ export type MultipleSceneDraft = {
   draftTitle: string | null;
   vaultPath: string;
   workflow: string | null;
+  /** Chosen at creation. Absent on projects made before kinds existed. */
+  kind?: ProjectKind | null;
   sceneFolder: string;
   scenes: IndentedScene[];
   ignoredFiles: string[] | null;
@@ -27,6 +31,8 @@ export type SingleSceneDraft = {
   draftTitle: string | null;
   vaultPath: string;
   workflow: string | null;
+  /** Chosen at creation. Absent on projects made before kinds existed. */
+  kind?: ProjectKind | null;
 };
 
 export type Draft = MultipleSceneDraft | SingleSceneDraft;

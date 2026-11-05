@@ -1,7 +1,8 @@
 <script lang="ts">
   import { last } from "lodash";
   import { normalizePath } from "obsidian";
-  import { draftForPath, projectFolderPath } from "src/model/scene-navigation";
+  import { kindLabel } from "src/model/project-kind";
+import { draftForPath, projectFolderPath } from "src/model/scene-navigation";
   import { pluginSettings, projects } from "src/model/stores";
   import {
     drafts,
@@ -197,6 +198,9 @@
             value={$selectedDraft.title}
             on:change={titleChanged}
           />
+          {#if kindLabel($selectedDraft.kind)}
+            <p class="longform-project-kind">{kindLabel($selectedDraft.kind)}</p>
+          {/if}
           {#if $selectedDraft.format === "scenes"}
             <label for="longform-project-scene-folder">Scene Folder</label>
             <input
@@ -349,6 +353,12 @@
     color: var(--text-muted);
     margin-top: var(--size-4-4);
     line-height: var(--line-height-tight);
+  }
+
+  p.longform-project-kind {
+    margin: var(--size-4-1) 0 0;
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
   }
 
   p.longform-project-warning {

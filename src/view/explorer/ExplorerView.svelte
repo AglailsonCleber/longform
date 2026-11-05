@@ -2,6 +2,7 @@
   import CompileView from "../compile/CompileView.svelte";
 
   import { selectedDraft } from "src/model/stores";
+  import { explorerTabs } from "src/model/project-kind";
   import { selectedTab } from "../stores";
   import { waitingForSync } from "src/model/stores";
 
@@ -31,14 +32,9 @@
     _migrate();
   }
 
-  $: {
-    if (
-      $selectedDraft &&
-      $selectedDraft.format === "single" &&
-      $selectedTab === "Scenes"
-    ) {
-      $selectedTab = "Project";
-    }
+  $: visibleTabs = $selectedDraft ? explorerTabs($selectedDraft) : [];
+  $: if ($selectedDraft && visibleTabs.indexOf($selectedTab) < 0) {
+    $selectedTab = visibleTabs[0] ?? "Project";
   }
 </script>
 
@@ -73,22 +69,9 @@
       <div>
         <div class="tabs">
           <div class="tab-list">
-            <Tab tab="Scenes" />
-            <Tab tab="Structure" />
-            <Tab tab="Plot" />
-            <Tab tab="Project" />
-            <Tab tab="Bible" />
-            <Tab tab="Capture" />
-            <Tab tab="Revision" />
-            <Tab tab="Archive" />
-            <Tab tab="Life" />
-            <Tab tab="Output" />
-            <Tab tab="Workshop" />
-            <Tab tab="Habit" />
-            <Tab tab="Verse" />
-            <Tab tab="Story" />
-            <Tab tab="Chronicle" />
-            <Tab tab="Compile" />
+            {#each visibleTabs as tab (tab)}
+              <Tab {tab} />
+            {/each}
           </div>
         </div>
         {#if $selectedTab === "Scenes"}
@@ -162,21 +145,9 @@
       <div>
         <div class="tabs">
           <div class="tab-list">
-            <Tab tab="Project" />
-            <Tab tab="Structure" />
-            <Tab tab="Plot" />
-            <Tab tab="Bible" />
-            <Tab tab="Capture" />
-            <Tab tab="Revision" />
-            <Tab tab="Archive" />
-            <Tab tab="Life" />
-            <Tab tab="Output" />
-            <Tab tab="Workshop" />
-            <Tab tab="Habit" />
-            <Tab tab="Verse" />
-            <Tab tab="Story" />
-            <Tab tab="Chronicle" />
-            <Tab tab="Compile" />
+            {#each visibleTabs as tab (tab)}
+              <Tab {tab} />
+            {/each}
           </div>
         </div>
         {#if $selectedTab === "Project"}

@@ -1,5 +1,7 @@
-import { App, Modal, TFolder } from "obsidian";
+import { App, Modal, TFile, TFolder } from "obsidian";
 import { insertDraftIntoFrontmatter } from "src/model/draft-utils";
+import { defaultPageForm, type ProjectKind } from "src/model/project-kind";
+import { setNoteForm } from "src/model/page-form";
 import { selectedDraftVaultPath } from "src/model/stores";
 import type {
   Draft,
@@ -30,7 +32,12 @@ export default class NewProjectModalContainer extends Modal {
     context.set("close", () => this.close());
     context.set(
       "createProject",
-      async (format: "scenes" | "single", title: string, path: string) => {
+      async (
+        format: "scenes" | "single",
+        title: string,
+        path: string,
+        kind: ProjectKind
+      ) => {
         const exists = await this.app.vault.adapter.exists(path);
         if (exists) {
           console.log(
@@ -53,6 +60,7 @@ export default class NewProjectModalContainer extends Modal {
               draftTitle: null,
               vaultPath: path,
               workflow: null,
+              kind,
               sceneFolder: "/",
               scenes: [],
               ignoredFiles: [],
@@ -68,12 +76,18 @@ export default class NewProjectModalContainer extends Modal {
               draftTitle: null,
               vaultPath: path,
               workflow: null,
+              kind,
             };
             return single;
           }
         })();
 
         await insertDraftIntoFrontmatter(this.app, path, newDraft);
+        const created = this.app.vault.getAbstractFileByPath(path);
+        const form = defaultPageForm(kind);
+        if (created instanceof TFile && form !== "prose") {
+          await setNoteForm(this.app, created, form);
+        }
         selectedDraftVaultPath.set(path);
         selectedTab.set(format === "scenes" ? "Scenes" : "Project");
         if (format === "single") {

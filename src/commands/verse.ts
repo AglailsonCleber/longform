@@ -20,13 +20,15 @@ import { craftTick, soundLayers, verseMode } from "src/model/craft-store";
 import { FORM_KEY } from "src/model/architecture";
 import { draftForPath } from "src/model/scene-navigation";
 import { drafts } from "src/model/stores";
+import { explorerTabs } from "src/model/project-kind";
 import { AskTextModal } from "src/view/revision/revision-modals";
 
 import type { CommandBuilder } from "./types";
 
 function activeLongformFile(app: App): TFile | null {
   const view = app.workspace.getActiveViewOfType(MarkdownView);
-  if (!view?.file || !draftForPath(view.file.path, get(drafts))) {
+  const draft = view.file ? draftForPath(view.file.path, get(drafts)) : null;
+  if (!view?.file || !draft || explorerTabs(draft).indexOf("Verse") < 0) {
     return null;
   }
   return view.file;

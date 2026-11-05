@@ -22,6 +22,7 @@ import { countWordsSimple } from "src/model/habit";
 import { craftTick } from "src/model/craft-store";
 import { draftForPath } from "src/model/scene-navigation";
 import { drafts, pluginSettings, selectedDraft } from "src/model/stores";
+import { explorerTabs } from "src/model/project-kind";
 import { AskTextModal } from "src/view/revision/revision-modals";
 import { createAlternateEnding } from "src/commands/plot";
 
@@ -29,7 +30,8 @@ import type { CommandBuilder } from "./types";
 
 function activeFile(app: App): TFile | null {
   const view = app.workspace.getActiveViewOfType(MarkdownView);
-  if (!view?.file || !draftForPath(view.file.path, get(drafts))) {
+  const draft = view.file ? draftForPath(view.file.path, get(drafts)) : null;
+  if (!view?.file || !draft || explorerTabs(draft).indexOf("Story") < 0) {
     return null;
   }
   return view.file;
