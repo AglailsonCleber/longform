@@ -283,7 +283,7 @@ Isto fica fora da compilação, de propósito:
 
 Quase tudo o que o painel grava é uma propriedade ao lado do bloco `longform`, no índice ou na cena. **Hide note properties** só esconde esse bloco na tela. Apagar a propriedade na nota apaga o dado.
 
-Não edite o bloco `longform` para mudar ordem de cenas, papel ou forma. Use as abas. Se precisar inspecionar, as propriedades continuam no arquivo com o arquivo em modo fonte, ou com **Hide note properties** desligado.
+Não edite o bloco `longform` para mudar ordem de cenas, papel ou forma. Use as abas. Com **Hide note properties** ligado, o bloco e o YAML do topo ficam fora da visualização de edição e da de leitura. As propriedades continuam no arquivo. Para vê-las, desligue a opção.
 
 ## Um dia de trabalho
 

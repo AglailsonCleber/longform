@@ -27,7 +27,21 @@
   opacity: 1;
 }
 
-.longform-leaf.longform-hide-properties .metadata-container {
+/*
+ * The editing view paints the properties block with
+ * --metadata-display-editing. A plain display:none on .metadata-container
+ * loses to that rule, so the block stays on screen while typing.
+ * Source mode shows the same data as frontmatter lines, not the block.
+ */
+.longform-leaf.longform-hide-properties,
+.longform-leaf.longform-hide-properties .markdown-source-view,
+.longform-leaf.longform-hide-properties .markdown-reading-view {
+  --metadata-display-reading: none;
+  --metadata-display-editing: none;
+}
+
+.longform-leaf.longform-hide-properties .metadata-container,
+.longform-leaf.longform-hide-properties .cm-line:has(.cm-hmd-frontmatter) {
   display: none;
 }
 
