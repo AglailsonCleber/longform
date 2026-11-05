@@ -8,7 +8,8 @@ import {
   type SpokenUnit,
 } from "src/model/read-aloud";
 import { draftForPath } from "src/model/scene-navigation";
-import { drafts } from "src/model/stores";
+import { drafts, pluginSettings } from "src/model/stores";
+import { speechLanguage } from "src/model/page-language";
 
 import type { CommandBuilder } from "./types";
 
@@ -30,13 +31,16 @@ const player = {
   },
 };
 
-function portugueseVoice(): SpeechSynthesisVoice | undefined {
+function voiceFor(languageTag: string): SpeechSynthesisVoice | undefined {
   const voices = window.speechSynthesis.getVoices();
-  const language = (voice: SpeechSynthesisVoice) =>
-    voice.lang.toLowerCase().replace("_", "-");
+  const tag = languageTag.toLowerCase().replace(/_/g, "-");
+  const base = tag.split("-")[0];
+  const code = (voice: SpeechSynthesisVoice) =>
+    voice.lang.toLowerCase().replace(/_/g, "-");
   return (
-    voices.find((voice) => language(voice).startsWith("pt-br")) ??
-    voices.find((voice) => language(voice).startsWith("pt"))
+    voices.find((voice) => code(voice) === tag) ??
+    voices.find((voice) => code(voice).indexOf(tag) === 0) ??
+    voices.find((voice) => code(voice) === base || code(voice).indexOf(base + "-") === 0)
   );
 }
 
@@ -61,9 +65,10 @@ function speak(units: SpokenUnit[]): void {
       return;
     }
     const utterance = new SpeechSynthesisUtterance(units[index].text);
-    utterance.lang = "pt-BR";
+    const language = speechLanguage(get(pluginSettings)?.pageLanguage);
+    utterance.lang = language;
     utterance.rate = 0.95;
-    const voice = portugueseVoice();
+    const voice = voiceFor(language);
     if (voice) {
       utterance.voice = voice;
     }

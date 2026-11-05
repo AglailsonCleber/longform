@@ -121,8 +121,8 @@ export interface LongformPluginSettings {
   pageMargin: number;
   /** Longform notes use the opposite of Obsidian's current theme. */
   lightManuscript: boolean;
-  /** Mark the writing page as Portuguese so the spell checker can follow it. */
-  portuguesePage: boolean;
+  /** BCP 47 language of a Longform note. Empty leaves the page unmarked. */
+  pageLanguage: string;
   /** Use a chosen size for the manuscript instead of the app font. */
   manuscriptFont: boolean;
   /** Manuscript size in pixels when manuscriptFont is on. */
@@ -178,7 +178,7 @@ export const DEFAULT_SETTINGS: LongformPluginSettings = {
   lineHeight: 1.7,
   pageMargin: 32,
   lightManuscript: false,
-  portuguesePage: true,
+  pageLanguage: "pt-BR",
   manuscriptFont: false,
   manuscriptFontSize: 18,
   reduceMotion: false,
@@ -225,7 +225,7 @@ export const TRACKED_SETTINGS_PATHS: (keyof LongformPluginSettings)[] = [
   "lineHeight",
   "pageMargin",
   "lightManuscript",
-  "portuguesePage",
+  "pageLanguage",
   "manuscriptFont",
   "manuscriptFontSize",
   "reduceMotion",
@@ -265,7 +265,7 @@ export const PASSTHROUGH_SAVE_SETTINGS_PATHS: (keyof LongformPluginSettings)[] =
     "lineHeight",
     "pageMargin",
     "lightManuscript",
-    "portuguesePage",
+    "pageLanguage",
     "manuscriptFont",
     "manuscriptFontSize",
     "reduceMotion",

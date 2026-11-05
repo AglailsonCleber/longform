@@ -1,5 +1,9 @@
 import { MarkdownView, Notice, type App } from "obsidian";
 
+import { get } from "svelte/store";
+
+import { speechLanguage } from "src/model/page-language";
+import { pluginSettings } from "src/model/stores";
 import { captureFolder, createCapture } from "./capture-files";
 import type { Draft } from "src/model/types";
 
@@ -55,7 +59,7 @@ export async function startDictation(app: App, draft: Draft | null): Promise<voi
     new Notice("This computer has no speech recognition. The raw draft is ready to type.");
     return;
   }
-  heard.lang = "pt-BR";
+  heard.lang = speechLanguage(get(pluginSettings)?.pageLanguage);
   heard.continuous = true;
   heard.interimResults = false;
   heard.onresult = (event) => {

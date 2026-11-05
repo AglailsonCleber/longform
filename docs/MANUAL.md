@@ -51,7 +51,7 @@ Em **Settings → Longform → Page**:
 | **Typewriter mode** | Mantém a linha do cursor no centro. |
 | **Reading measure** | Coluna estreita, com largura, entrelinha e margem próprias. |
 | **Light manuscript** | A página de escrita usa o tema oposto ao do aplicativo. |
-| **Portuguese page** | Marca a página como português para o corretor. |
+| **Page language** | Língua da nota de um projeto. O corretor usa o dicionário dessa língua, quando instalado. O ditado e a leitura em voz alta seguem a mesma escolha. **Off** deixa a página sem marca. |
 | Fonte e contraste | Tamanho do manuscrito e contraste mais forte, quando ligados. |
 
 Atalhos equivalentes: **Toggle current line highlight**, **Toggle focus mode**, **Toggle typewriter mode**.

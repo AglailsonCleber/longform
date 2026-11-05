@@ -12,6 +12,7 @@ import type LongformPlugin from "../../main";
 import { pluginSettings, userScriptSteps } from "src/model/stores";
 import { FolderSuggest } from "./folder-suggest";
 import { DEFAULT_SESSION_FILE } from "src/model/types";
+import { PAGE_LANGUAGE_OPTIONS } from "src/model/page-language";
 import { FileSuggest } from "./file-suggest";
 import { syncSceneIndices } from "src/model/store-vault-sync";
 
@@ -210,16 +211,24 @@ export class LongformSettingsTab extends PluginSettingTab {
         });
       });
     new Setting(containerEl)
-      .setName("Portuguese page")
+      .setName("Page language")
       .setDesc(
-        "Mark a Longform note as Portuguese (pt-BR) and ask the spell checker for a Portuguese dictionary when one is installed. Dashes, the hyphen, and quotes are on the writing bar."
+        "Language of a Longform note. The spell checker uses it when that dictionary is installed. Dictation and read-aloud follow it. Off leaves the page unmarked."
       )
-      .addToggle((cb) => {
-        cb.setValue(settings.portuguesePage);
+      .addDropdown((cb) => {
+        for (const option of PAGE_LANGUAGE_OPTIONS) {
+          cb.addOption(option.id || "off", option.label);
+        }
+        const current = settings.pageLanguage ?? "pt-BR";
+        const shown = current === "" ? "off" : current;
+        if (shown !== "off" && !PAGE_LANGUAGE_OPTIONS.some((option) => option.id === shown)) {
+          cb.addOption(shown, shown);
+        }
+        cb.setValue(shown);
         cb.onChange((value) => {
           pluginSettings.update((s) => ({
             ...s,
-            portuguesePage: value,
+            pageLanguage: value === "off" ? "" : value,
           }));
         });
       });

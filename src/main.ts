@@ -54,7 +54,7 @@ import {
 } from "./model/stores";
 import { addCommands } from "./commands";
 import { determineMigrationStatus } from "./model/migration";
-import { applyPortugueseSpellcheck, clearBookDictionary, syncBookDictionary } from "./model/spellcheck";
+import { applyPageSpellcheck, clearBookDictionary, syncBookDictionary } from "./model/spellcheck";
 import { bookDictionary, wordsIn } from "./model/archive";
 import { cardsForProject } from "./model/bible";
 import { removeLiveRegion } from "./view/live-region";
@@ -87,6 +87,7 @@ import { longformBibleExtension } from "./view/bible-extension";
 import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
 import { PageRecovery } from "./view/page-recovery";
+import { savedPageLanguage } from "./model/page-language";
 import { syncWritingBar } from "./view/writing-bar";
 import { longformPageExtension } from "./view/page-mode-extension";
 import {
@@ -111,7 +112,7 @@ const PAGE_SETTING_KEYS: (keyof LongformPluginSettings)[] = [
   "lineHeight",
   "pageMargin",
   "lightManuscript",
-  "portuguesePage",
+  "pageLanguage",
   "manuscriptFont",
   "manuscriptFontSize",
   "reduceMotion",
@@ -201,9 +202,9 @@ export default class LongformPlugin extends Plugin {
       }
       if (
         !this.cachedSettings ||
-        this.cachedSettings.portuguesePage !== value.portuguesePage
+        this.cachedSettings.pageLanguage !== value.pageLanguage
       ) {
-        applyPortugueseSpellcheck(value.portuguesePage);
+        applyPageSpellcheck(value.pageLanguage);
       }
 
       this.cachedSettings = value;
@@ -341,6 +342,8 @@ export default class LongformPlugin extends Plugin {
         MANUSCRIPT_LIGHT_CLASS,
         MANUSCRIPT_DARK_CLASS
       );
+      leaf.view.containerEl.removeAttribute("lang");
+      delete leaf.view.containerEl.dataset.longformLang;
       for (const name of READING_MEASURE_PROPERTIES) {
         leaf.view.containerEl.style.removeProperty(name);
       }
@@ -360,7 +363,9 @@ export default class LongformPlugin extends Plugin {
   }
 
   async loadSettings(): Promise<void> {
-    const settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const raw = (await this.loadData()) as Record<string, unknown> | null;
+    const settings = Object.assign({}, DEFAULT_SETTINGS, raw ?? {});
+    settings.pageLanguage = savedPageLanguage(raw);
 
     // deserialize iso8601 strings as dates
 
@@ -839,12 +844,19 @@ export default class LongformPlugin extends Plugin {
           isExercise && capture
             ? exercisePageForm(capture.form)
             : pageForm(draft ? frontmatter?.[PAGE_FORM_KEY] : undefined);
-        const portuguese = wantLeaf && pageSettings.portuguesePage;
-        if (portuguese) {
-          el.setAttribute("lang", "pt-BR");
+        const language = wantLeaf ? pageSettings.pageLanguage || "" : "";
+        const marked = el.dataset.longformLang ?? "";
+        if (marked !== language) {
+          pageClassesChanged = true;
+        }
+        if (language) {
+          el.setAttribute("lang", language);
+          el.dataset.longformLang = language;
         } else {
           el.removeAttribute("lang");
+          delete el.dataset.longformLang;
         }
+        el.classList.remove("longform-lang-pt");
         const sized = wantLeaf && pageSettings.manuscriptFont && pageSettings.manuscriptFontSize > 0;
         el.classList.toggle("longform-font", sized);
         if (sized) {
@@ -853,10 +865,6 @@ export default class LongformPlugin extends Plugin {
           el.style.removeProperty("--longform-manuscript-font");
         }
         el.classList.toggle("longform-strong-contrast", wantLeaf && pageSettings.strongContrast);
-        if (el.classList.contains("longform-lang-pt") !== portuguese) {
-          el.classList.toggle("longform-lang-pt", portuguese);
-          pageClassesChanged = true;
-        }
         for (const cls of PAGE_FORM_CLASSES) {
           const want = wantLeaf && cls === pageFormClass(form);
           if (el.classList.contains(cls) !== want) {

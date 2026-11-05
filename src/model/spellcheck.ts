@@ -1,3 +1,5 @@
+import { matchSpellLanguage } from "./page-language";
+
 type SpellSession = {
   availableSpellCheckerLanguages?: string[];
   getSpellCheckerLanguages?: () => string[];
@@ -21,21 +23,12 @@ function spellSession(): SpellSession | null {
   }
 }
 
-function portugueseLanguage(available: string[]): string | null {
-  const names = available.map((language) => language.toLowerCase());
-  const ptBr = names.findIndex((language) => language === "pt-br");
-  if (ptBr >= 0) {
-    return available[ptBr];
-  }
-  const pt = names.findIndex((language) => language.startsWith("pt"));
-  return pt >= 0 ? available[pt] : null;
-}
-
 /**
- * Asks the desktop spell checker for Portuguese while the page setting is on.
- * The previous language list is put back when the setting is turned off.
+ * Asks the desktop spell checker for the page language.
+ * An empty language puts the previous list back.
+ * A language with no installed dictionary leaves the checker alone.
  */
-export function applyPortugueseSpellcheck(enabled: boolean): void {
+export function applyPageSpellcheck(language: string): void {
   const session = spellSession();
   if (
     !session?.setSpellCheckerLanguages ||
@@ -45,7 +38,7 @@ export function applyPortugueseSpellcheck(enabled: boolean): void {
     return;
   }
 
-  if (!enabled) {
+  if (!language) {
     if (previousLanguages) {
       session.setSpellCheckerLanguages(previousLanguages);
       previousLanguages = null;
@@ -53,14 +46,14 @@ export function applyPortugueseSpellcheck(enabled: boolean): void {
     return;
   }
 
-  const portuguese = portugueseLanguage(session.availableSpellCheckerLanguages);
-  if (!portuguese) {
+  const matched = matchSpellLanguage(language, session.availableSpellCheckerLanguages);
+  if (!matched) {
     return;
   }
   if (!previousLanguages) {
     previousLanguages = session.getSpellCheckerLanguages();
   }
-  session.setSpellCheckerLanguages([portuguese]);
+  session.setSpellCheckerLanguages([matched]);
 }
 
 let managedWords: string[] = [];

@@ -1,6 +1,7 @@
 import type { Extension } from "@codemirror/state";
 import { EditorView, ViewPlugin, type ViewUpdate } from "@codemirror/view";
 
+import { catalogLanguage } from "src/model/page-language";
 import { pageLineMarks } from "./page-mode";
 
 const MARK_CLASSES = ["longform-current-paragraph", "longform-current-line"];
@@ -10,11 +11,12 @@ function leafOf(view: EditorView): Element | null {
 }
 
 function markLanguage(view: EditorView, leaf: Element | null): void {
-  if (leaf?.classList.contains("longform-lang-pt")) {
-    view.contentDOM.lang = "pt-BR";
+  const lang = leaf?.getAttribute("lang") ?? "";
+  if (lang && catalogLanguage(lang)) {
+    view.contentDOM.lang = lang;
     return;
   }
-  if (view.contentDOM.lang === "pt-BR") {
+  if (catalogLanguage(view.contentDOM.lang)) {
     view.contentDOM.removeAttribute("lang");
   }
 }
