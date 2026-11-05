@@ -9,12 +9,6 @@ function leafOf(view: EditorView): Element | null {
   return view.dom.closest(".longform-leaf");
 }
 
-function clearMarks(view: EditorView): void {
-  view.contentDOM.querySelectorAll(".cm-line").forEach((line) => {
-    line.classList.remove(...MARK_CLASSES);
-  });
-}
-
 function markLanguage(view: EditorView, leaf: Element | null): void {
   if (leaf?.classList.contains("longform-lang-pt")) {
     view.contentDOM.lang = "pt-BR";
@@ -26,49 +20,80 @@ function markLanguage(view: EditorView, leaf: Element | null): void {
 }
 
 /**
+ * The element for a document line in this editor.
+ * Side 1 keeps the start of the line from landing on the previous line.
+ * A nested preview editor is ignored.
+ */
+function lineElementAt(view: EditorView, pos: number): HTMLElement | null {
+  if (!view.dom.isConnected) {
+    return null;
+  }
+  const line = view.state.doc.lineAt(pos);
+  const probe = line.from === line.to ? line.from : Math.min(line.to, line.from + 1);
+  const side: -1 | 1 = probe === line.from ? 1 : -1;
+  let resolved: { node: Node };
+  try {
+    resolved = view.domAtPos(probe, side);
+  } catch {
+    return null;
+  }
+  const node =
+    resolved.node.nodeType === Node.ELEMENT_NODE
+      ? (resolved.node as HTMLElement)
+      : resolved.node.parentElement;
+  const element = node?.closest(".cm-line");
+  if (!(element instanceof HTMLElement)) {
+    return null;
+  }
+  if (element.closest(".cm-editor") !== view.dom) {
+    return null;
+  }
+  return element;
+}
+
+/**
  * Paints the current paragraph on the existing line elements.
  * Line decorations are avoided: in Live Preview they were copied into the note.
+ * Classes already in place are left alone, so a repaint does not restart the fade.
  */
 function paint(view: EditorView): void {
-  clearMarks(view);
   const leaf = leafOf(view);
   markLanguage(view, leaf);
-  if (!leaf) {
-    return;
-  }
-  const focus = leaf.classList.contains("longform-focus");
-  const highlight = leaf.classList.contains("longform-highlight-line");
-  if (!focus && !highlight) {
-    return;
+  const focus = leaf?.classList.contains("longform-focus") ?? false;
+  const highlight = leaf?.classList.contains("longform-highlight-line") ?? false;
+  const wanted = new Map<HTMLElement, string[]>();
+
+  if (leaf && (focus || highlight)) {
+    const doc = view.state.doc;
+    const cursorLine = doc.lineAt(view.state.selection.main.head).number - 1;
+    const marks = pageLineMarks(doc.lines, cursorLine, { focus, highlight }, (index) =>
+      doc.line(index + 1).text
+    );
+    for (const mark of marks) {
+      const line = view.state.doc.line(mark.line + 1);
+      const element = lineElementAt(view, line.from);
+      if (!element) {
+        continue;
+      }
+      const classes = wanted.get(element) ?? [];
+      for (const name of mark.classes.split(" ")) {
+        if (name.length > 0 && classes.indexOf(name) < 0) {
+          classes.push(name);
+        }
+      }
+      wanted.set(element, classes);
+    }
   }
 
-  const doc = view.state.doc;
-  const cursorLine = doc.lineAt(view.state.selection.main.head).number - 1;
-  const marks = new Map(
-    pageLineMarks(
-      doc.lines,
-      cursorLine,
-      { focus, highlight },
-      (index) => doc.line(index + 1).text
-    ).map((mark) => [mark.line, mark.classes])
-  );
-
-  for (const block of view.viewportLineBlocks) {
-    const classes = marks.get(doc.lineAt(block.from).number - 1);
-    if (!classes) {
-      continue;
+  view.contentDOM.querySelectorAll(".cm-line").forEach((node) => {
+    if (!(node instanceof HTMLElement) || node.closest(".cm-editor") !== view.dom) {
+      return;
     }
-    const resolved = view.domAtPos(block.from);
-    const node =
-      resolved.node.nodeType === Node.ELEMENT_NODE
-        ? (resolved.node as HTMLElement)
-        : resolved.node.parentElement;
-    const line = node?.closest(".cm-line");
-    if (!line) {
-      continue;
+    const classes = wanted.get(node) ?? [];
+    for (const name of MARK_CLASSES) {
+      node.classList.toggle(name, classes.indexOf(name) >= 0);
     }
-    line.classList.add(...classes.split(" "));
-  }
+  });
 }
 
 function shouldCenter(update: ViewUpdate): boolean {
@@ -85,16 +110,26 @@ function shouldCenter(update: ViewUpdate): boolean {
 class PageModeController {
   private queued = false;
   private repaint = 0;
+  private readonly observer: MutationObserver;
 
-  constructor(view: EditorView) {
+  constructor(private readonly view: EditorView) {
+    // Live Preview replaces .cm-line nodes after the editor update, which
+    // drops the focus class. Watch the content and paint again when that happens.
+    this.observer = new MutationObserver(() => {
+      this.repaintAfterLayout(this.view);
+    });
+    this.observer.observe(view.contentDOM, { childList: true, subtree: true });
     paint(view);
   }
 
   update(update: ViewUpdate): void {
     paint(update.view);
-    // Live Preview rebuilds the line after Enter, which drops the class
-    // painted during this update. Paint again once the new line exists.
-    if (update.docChanged || update.selectionSet) {
+    if (
+      update.docChanged ||
+      update.selectionSet ||
+      update.viewportChanged ||
+      update.geometryChanged
+    ) {
       this.repaintAfterLayout(update.view);
     }
     if (shouldCenter(update)) {
@@ -102,14 +137,20 @@ class PageModeController {
     }
   }
 
+  destroy(): void {
+    this.observer.disconnect();
+    cancelAnimationFrame(this.repaint);
+  }
+
   private repaintAfterLayout(view: EditorView): void {
     cancelAnimationFrame(this.repaint);
     this.repaint = requestAnimationFrame(() => {
-      this.repaint = requestAnimationFrame(() => {
-        if (view.dom.isConnected) {
-          paint(view);
-        }
-      });
+      if (!view.dom.isConnected) {
+        return;
+      }
+      this.observer.disconnect();
+      paint(view);
+      this.observer.observe(view.contentDOM, { childList: true, subtree: true });
     });
   }
 

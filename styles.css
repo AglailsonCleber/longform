@@ -20,7 +20,6 @@
 
 .longform-leaf.longform-focus .cm-line {
   opacity: 0.28;
-  transition: opacity 120ms linear;
 }
 
 .longform-leaf.longform-focus .cm-line.longform-current-paragraph,
