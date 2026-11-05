@@ -170,6 +170,7 @@
   }
 
   const showNewDraftModal: () => void = getContext("showNewDraftModal");
+  const deleteCurrentProject: () => void = getContext("deleteCurrentProject");
   function onNewDraft() {
     showNewDraftModal();
   }
@@ -293,6 +294,14 @@
     {#if showDrafts}
       <DraftList />
     {/if}
+  </div>
+  <div class="longform-project-section">
+    <button type="button" class="mod-warning" on:click={deleteCurrentProject}
+      >Delete project</button
+    >
+    <p class="longform-project-warning">
+      Removes every draft of this project, its scenes, and the folders Longform keeps beside it. Other notes in the folder stay.
+    </p>
   </div>
 </div>
 

@@ -48,6 +48,21 @@ export class PageRecovery {
     this.offered.delete(path);
   }
 
+  forgetWhere(belongs: (path: string) => boolean): void {
+    for (const path of Array.from(this.pending.keys())) {
+      if (belongs(path)) {
+        this.pending.delete(path);
+      }
+    }
+    this.notes = this.notes.filter((note) => !belongs(note.path));
+    for (const path of Array.from(this.offered)) {
+      if (belongs(path)) {
+        this.offered.delete(path);
+      }
+    }
+    this.flush();
+  }
+
   snapshotFor(path: string): PageSnapshot | null {
     return this.pending.get(path) ?? this.notes.find((note) => note.path === path) ?? null;
   }

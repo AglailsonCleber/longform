@@ -23,6 +23,8 @@ Também dá para criar o índice à mão com **Insert multi-scene frontmatter** 
 
 O bloco `longform` do índice é a espinha do projeto. Evite editá-lo direto. O plugin não apaga arquivos quando o índice muda, mas uma edição errada desorganiza a ordem.
 
+Para apagar o projeto inteiro, use **Delete project** na aba **Project**, ou o comando **Delete this project**. O plugin pede confirmação e leva para a lixeira do sistema o índice, as cenas, e as pastas Pesquisa, Bíblia, Reading, Output e Workshop de cada rascunho desse título. Notas de pesquisa e fichas marcadas como deste projeto também saem. Arquivos seus que estejam na mesma pasta e não pertençam ao projeto ficam. A pasta do projeto só some se ficar vazia.
+
 ### Cenas
 
 Na aba **Scenes**:

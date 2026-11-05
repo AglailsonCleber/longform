@@ -18,6 +18,7 @@ import {
   insertSingleSceneTemplate,
 } from "./templates";
 import { startNewSession } from "./word-counts";
+import { deleteProjectCommand } from "./delete-project";
 import {
   insertMarginNote,
   listMarginNotes,
@@ -141,6 +142,7 @@ const commandBuilders = [
   insertMultiSceneTemplate,
   insertSingleSceneTemplate,
   startNewSession,
+  deleteProjectCommand,
   toggleHighlightCurrentLine,
   toggleFocusMode,
   toggleTypewriterMode,

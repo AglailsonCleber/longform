@@ -141,6 +141,22 @@ export class WorkshopLedger {
     return true;
   }
 
+  dropProject(title: string): string[] {
+    const gone = this.workshops.filter((workshop) => workshop.project === title);
+    const ids = new Set(gone.map((workshop) => workshop.id));
+    const frozen = gone
+      .filter((workshop) => workshop.frozenPath.length > 0)
+      .map((workshop) => workshop.frozenPath);
+    this.workshops = this.workshops.filter((workshop) => workshop.project !== title);
+    this.threads = this.threads.filter((thread) => !ids.has(thread.workshopId));
+    this.suggestions = this.suggestions.filter((item) => !ids.has(item.workshopId));
+    this.questions = this.questions.filter((item) => !ids.has(item.workshopId));
+    this.attention = this.attention.filter((item) => !ids.has(item.workshopId));
+    this.swaps = this.swaps.filter((item) => item.project !== title);
+    this.changed();
+    return frozen;
+  }
+
   rename(from: string, to: string): void {
     this.workshops = this.workshops.map((workshop) =>
       workshop.piecePath === from ? { ...workshop, piecePath: to } : workshop

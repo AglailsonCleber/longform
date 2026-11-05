@@ -88,6 +88,17 @@ export class LiteraryLedger {
     this.changed();
   }
 
+  dropProject(title: string): string[] {
+    const frozen = this.submissions
+      .filter((submission) => submission.project === title && submission.frozenPath)
+      .map((submission) => submission.frozenPath);
+    this.submissions = this.submissions.filter((submission) => submission.project !== title);
+    this.contracts = this.contracts.filter((contract) => contract.project !== title);
+    this.editions = this.editions.filter((edition) => edition.project !== title);
+    this.changed();
+    return frozen;
+  }
+
   dropSubmission(id: string): void {
     this.submissions = this.submissions.filter((submission) => submission.id !== id);
     this.changed();

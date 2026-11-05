@@ -24,6 +24,8 @@ import NewDraftModal from "src/view/project-lifecycle/new-draft-modal";
 import { UndoManager } from "../undo/undo-manager";
 import { ignoreScene } from "./scene-menu-items";
 import { trashPiece } from "src/commands/revision";
+import { confirmDeleteProject } from "src/commands/delete-project";
+import type LongformPlugin from "src/main";
 import { appContext } from "../utils";
 
 export const VIEW_TYPE_LONGFORM_EXPLORER = "VIEW_TYPE_LONGFORM_EXPLORER";
@@ -303,6 +305,17 @@ export class ExplorerPane extends ItemView {
 
     context.set("showNewDraftModal", () => {
       new NewDraftModal(this.app).open();
+    });
+
+    context.set("deleteCurrentProject", () => {
+      const draft = get(selectedDraft);
+      const plugin = (
+        this.app as { plugins?: { getPlugin(id: string): LongformPlugin | null } }
+      ).plugins?.getPlugin("longform");
+      if (!draft || !plugin) {
+        return;
+      }
+      confirmDeleteProject(plugin, draft);
     });
 
     this.explorerView = new ExplorerView({

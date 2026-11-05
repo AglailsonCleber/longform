@@ -115,6 +115,14 @@ export class RevisionLedger {
     this.changed();
   }
 
+  dropWhere(belongs: (path: string) => boolean): void {
+    this.versions = this.versions.filter((item) => !belongs(item.path));
+    this.proposals = this.proposals.filter((item) => !belongs(item.path));
+    this.marks = this.marks.filter((item) => !belongs(item.path));
+    this.trash = this.trash.filter((item) => !belongs(item.path));
+    this.changed();
+  }
+
   rename(from: string, to: string): void {
     const move = <T extends { path: string }>(item: T): T =>
       item.path === from ? { ...item, path: to } : item;
