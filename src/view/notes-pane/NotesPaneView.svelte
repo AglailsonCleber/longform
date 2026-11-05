@@ -14,10 +14,6 @@
   export let onScene: () => void = () => {};
   export let onCharacter: () => void = () => {};
   export let onParenthetical: () => void = () => {};
-  export let onDash: () => void = () => {};
-  export let onHyphen: () => void = () => {};
-  export let onQuotes: () => void = () => {};
-  export let onMissing: () => void = () => {};
   export let onBeside: () => void = () => {};
 
   const formLabel: Record<PageForm, string> = {
@@ -81,18 +77,6 @@
       </div>
     {/if}
     <div class="longform-form-bar">
-      <button type="button" class="longform-notes-item" on:click={onDash}>
-        — Dash
-      </button>
-      <button type="button" class="longform-notes-item" on:click={onHyphen}>
-        - Hyphen
-      </button>
-      <button type="button" class="longform-notes-item" on:click={onQuotes}>
-        “” Quotes
-      </button>
-      <button type="button" class="longform-notes-item" on:click={onMissing}>
-        TK
-      </button>
       <button type="button" class="longform-notes-item" on:click={onBeside}>
         Beside
       </button>

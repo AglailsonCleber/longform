@@ -20,7 +20,6 @@ import { draftForPath, scenePath } from "src/model/scene-navigation";
 import { drafts, selectedDraft, selectedProject } from "src/model/stores";
 import type { MultipleSceneDraft } from "src/model/types";
 import { revisionLedger, toggleReaderPath } from "src/view/revision-ledger";
-import { syncWritingBar } from "src/view/writing-bar";
 import { AskTextModal, ParagraphModal } from "src/view/revision/revision-modals";
 
 import type { CommandBuilder } from "./types";
@@ -219,7 +218,6 @@ export async function toggleReader(app: App): Promise<void> {
   }
   const enabled = toggleReaderPath(view.file.path);
   view.containerEl.classList.toggle("longform-reader", enabled);
-  syncWritingBar(view.containerEl, view, !enabled);
   const state = view.getState() as { mode?: string; source?: boolean };
   if (enabled) {
     await view.setState({ ...state, mode: "preview", source: false }, { history: false });

@@ -88,7 +88,7 @@ import { longformMarginNoteExtension } from "./view/margin-note-extension";
 import { longformMissingWordExtension } from "./view/missing-word-extension";
 import { PageRecovery } from "./view/page-recovery";
 import { savedPageLanguage } from "./model/page-language";
-import { syncWritingBar } from "./view/writing-bar";
+import { addWritingMarks } from "./view/editor-insert-menu";
 import { longformPageExtension } from "./view/page-mode-extension";
 import {
   MANUSCRIPT_DARK_CLASS,
@@ -249,6 +249,15 @@ export default class LongformPlugin extends Plugin {
     bindWorkshopLedger(this.workshopLedger);
 
     addCommands(this);
+    this.registerEvent(
+      this.app.workspace.on("editor-menu", (menu, editor, info) => {
+        const path = info.file?.path;
+        if (!path || !draftForPath(path, get(drafts))) {
+          return;
+        }
+        addWritingMarks(menu, editor);
+      })
+    );
     this.registerEditorExtension(longformPageExtension);
     this.registerEditorExtension(longformMarginNoteExtension);
     this.registerEditorExtension(longformMissingWordExtension);
@@ -892,11 +901,6 @@ export default class LongformPlugin extends Plugin {
         const reading =
           wantLeaf && get(readerPaths).indexOf(leaf.view.file.path) >= 0;
         el.classList.toggle("longform-reader", reading);
-        syncWritingBar(
-          el,
-          leaf.view instanceof MarkdownView ? leaf.view : null,
-          wantLeaf && !reading
-        );
       }
 
       if (pageClassesChanged && leaf.view instanceof MarkdownView) {

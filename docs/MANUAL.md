@@ -58,7 +58,7 @@ Atalhos equivalentes: **Toggle current line highlight**, **Toggle focus mode**, 
 
 ### Forma da página
 
-Na barra da nota, ou pelos comandos:
+No painel **Private comments**, em **Page form**, ou pelos comandos:
 
 - **Set page form to prose** — prosa corrida.
 - **Set page form to verse** — a quebra de linha é do poema. O verso não reflui como parágrafo.
@@ -69,10 +69,15 @@ Com a forma de verso, **New stanza** abre uma estrofe (linha em branco e verso n
 
 ### Português na página
 
+Clique com o botão direito na nota. No submenu **Insert** (**Inserir**), uma seção reúne:
+
 - **Insert dialogue dash** — travessão de fala.
 - **Insert hyphen** — hífen de palavra composta, sem virar travessão.
 - **Insert quotes** — aspas no trecho selecionado, ou um par vazio com o cursor no meio.
 - **Insert missing word** — um `TK` pesquisável no lugar da palavra que ainda não veio.
+
+Os comandos continuam na paleta:
+
 - **Insert margin note** — comentário privado na margem. Não entra na saída. **List margin notes** e **Show private comments** reúnem esses comentários.
 - **Read aloud** lê a nota, com pausa de parágrafo e, no poema, de verso e de estrofe. **Stop reading** interrompe.
 - **Open beside this page** abre a pesquisa, a ficha ou outra versão ao lado.
