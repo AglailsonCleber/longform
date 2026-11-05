@@ -1,4 +1,4 @@
-import { Notice, type MarkdownFileInfo, type MarkdownView } from "obsidian";
+import { Notice, type Editor, type MarkdownFileInfo, type MarkdownView } from "obsidian";
 import { get } from "svelte/store";
 
 import {
@@ -22,6 +22,25 @@ function isLongformFile(view: MarkdownView | MarkdownFileInfo): boolean {
   return draftForPath(path, get(drafts)) !== null;
 }
 
+export function insertMarginNoteInto(editor: Editor): void {
+  const lines = editor.getValue().split(/\r?\n/);
+  let lineNo = lineForMarginNote(lines, editor.getCursor().line);
+  if (lineNo >= editor.lineCount()) {
+    const last = Math.max(0, editor.lineCount() - 1);
+    editor.replaceRange("\n", {
+      line: last,
+      ch: editor.getLine(last).length,
+    });
+    lineNo = last + 1;
+  }
+
+  const cursor = editor.getCursor();
+  const ch = lineNo === cursor.line ? cursor.ch : editor.getLine(lineNo).length;
+  const edited = marginNoteEdit(editor.getLine(lineNo), ch);
+  editor.setLine(lineNo, edited.line);
+  editor.setCursor({ line: lineNo, ch: edited.cursor });
+}
+
 export const insertMarginNote: CommandBuilder = () => ({
   id: "longform-insert-margin-note",
   name: "Insert margin note",
@@ -32,23 +51,7 @@ export const insertMarginNote: CommandBuilder = () => ({
     if (checking) {
       return true;
     }
-
-    const lines = editor.getValue().split(/\r?\n/);
-    let lineNo = lineForMarginNote(lines, editor.getCursor().line);
-    if (lineNo >= editor.lineCount()) {
-      const last = Math.max(0, editor.lineCount() - 1);
-      editor.replaceRange("\n", {
-        line: last,
-        ch: editor.getLine(last).length,
-      });
-      lineNo = last + 1;
-    }
-
-    const cursor = editor.getCursor();
-    const ch = lineNo === cursor.line ? cursor.ch : editor.getLine(lineNo).length;
-    const edited = marginNoteEdit(editor.getLine(lineNo), ch);
-    editor.setLine(lineNo, edited.line);
-    editor.setCursor({ line: lineNo, ch: edited.cursor });
+    insertMarginNoteInto(editor);
   },
 });
 

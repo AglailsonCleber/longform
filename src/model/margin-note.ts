@@ -52,6 +52,25 @@ export function marginNotesInDocument(contents: string): MarginNoteHit[] {
   });
 }
 
+/**
+ * The source stays on screen only while the caret is inside the note.
+ * The position just after it is where the caret rests at the end of a line,
+ * and that must keep the code hidden.
+ */
+export function marginNoteRevealed(
+  from: number,
+  to: number,
+  ranges: readonly { from: number; to: number }[]
+): boolean {
+  for (let index = 0; index < ranges.length; index += 1) {
+    const range = ranges[index];
+    if (range.from < to && range.to > from) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /** Where the cursor sits so the writer can keep typing the question. */
 export function cursorInsideMarginNote(line: string, note: MarginNote): number {
   const raw = line.slice(note.from, note.to);

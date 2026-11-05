@@ -1,21 +1,54 @@
-import { EditorSelection, type Extension } from "@codemirror/state";
+import { EditorSelection, Prec, type Extension } from "@codemirror/state";
 import {
   Decoration,
   EditorView,
   ViewPlugin,
+  WidgetType,
   type DecorationSet,
   type ViewUpdate,
 } from "@codemirror/view";
 
 import {
   cursorInsideMarginNote,
+  marginNoteRevealed,
   marginNotesInLine,
   type MarginNote,
 } from "src/model/margin-note";
 
-const SYNTAX_CLASS = "longform-margin-syntax";
+class MarginAnchor extends WidgetType {
+  constructor(private readonly place: number) {
+    super();
+  }
+
+  eq(other: MarginAnchor): boolean {
+    return other.place === this.place;
+  }
+
+  toDOM(view: EditorView): HTMLElement {
+    const el = document.createElement("span");
+    el.className = "longform-margin-anchor";
+    el.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      revealMarginNote(view, this.place);
+    });
+    return el;
+  }
+}
+
+function revealMarginNote(view: EditorView, pos: number): void {
+  view.dispatch({
+    selection: EditorSelection.cursor(pos),
+    scrollIntoView: true,
+  });
+  view.focus();
+}
 
 function lineElement(view: EditorView, pos: number): HTMLElement | null {
+  const ready = view as EditorView & { docView?: unknown };
+  if (!ready.docView) {
+    return null;
+  }
   const resolved = view.domAtPos(pos);
   const node =
     resolved.node.nodeType === Node.ELEMENT_NODE
@@ -34,22 +67,19 @@ function syntaxMarks(view: EditorView): DecorationSet {
   }
   const marks = [];
   const doc = view.state.doc;
-  for (const { from, to } of view.visibleRanges) {
-    let pos = from;
-    while (pos <= to) {
-      const line = doc.lineAt(pos);
-      for (const note of marginNotesInLine(line.text)) {
-        marks.push(
-          Decoration.mark({ class: SYNTAX_CLASS }).range(
-            line.from + note.from,
-            line.from + note.to
-          )
-        );
+  const ranges = view.state.selection.ranges;
+  for (let number = 1; number <= doc.lines; number += 1) {
+    const line = doc.line(number);
+    for (const note of marginNotesInLine(line.text)) {
+      const start = line.from + note.from;
+      const end = line.from + note.to;
+      if (marginNoteRevealed(start, end, ranges)) {
+        continue;
       }
-      if (line.to >= to) {
-        break;
-      }
-      pos = line.to + 1;
+      const place = line.from + cursorInsideMarginNote(line.text, note);
+      marks.push(
+        Decoration.replace({ widget: new MarginAnchor(place) }).range(start, end)
+      );
     }
   }
   return Decoration.set(marks, true);
@@ -72,7 +102,7 @@ class MarginNoteLayer {
     this.inLeaf = inLongformLeaf(view);
     this.decorations = syntaxMarks(view);
     this.refreshHasNote(view);
-    this.paint(view);
+    this.repaintAfterLayout(view);
   }
 
   update(update: ViewUpdate): void {
@@ -81,7 +111,13 @@ class MarginNoteLayer {
     const nudged = update.transactions.some((transaction) =>
       transaction.isUserEvent("longform.page")
     );
-    if (update.docChanged || update.viewportChanged || leafChanged || nudged) {
+    if (
+      update.docChanged ||
+      update.viewportChanged ||
+      update.selectionSet ||
+      leafChanged ||
+      nudged
+    ) {
       this.inLeaf = leaf;
       this.decorations = syntaxMarks(update.view);
     }
@@ -95,10 +131,7 @@ class MarginNoteLayer {
       if (update.docChanged || leafChanged || nudged) {
         this.refreshHasNote(update.view);
       }
-      this.paint(update.view);
-      if (update.docChanged) {
-        this.repaintAfterLayout(update.view);
-      }
+      this.repaintAfterLayout(update.view);
     }
   }
 
@@ -135,6 +168,10 @@ class MarginNoteLayer {
   }
 
   private paint(view: EditorView): void {
+    const ready = view as EditorView & { docView?: unknown };
+    if (!ready.docView) {
+      return;
+    }
     while (this.layer.firstChild) {
       this.layer.removeChild(this.layer.firstChild);
     }
@@ -196,21 +233,16 @@ class MarginNoteLayer {
     element.style.top = `${top}px`;
     element.addEventListener("mousedown", (event) => {
       event.preventDefault();
+      event.stopPropagation();
       const line = view.state.doc.lineAt(lineFrom);
-      view.dispatch({
-        selection: EditorSelection.cursor(
-          line.from + cursorInsideMarginNote(line.text, note)
-        ),
-      });
-      view.focus();
+      revealMarginNote(view, line.from + cursorInsideMarginNote(line.text, note));
     });
     return element;
   }
 }
 
-export const longformMarginNoteExtension: Extension = ViewPlugin.fromClass(
-  MarginNoteLayer,
-  {
+export const longformMarginNoteExtension: Extension = Prec.highest(
+  ViewPlugin.fromClass(MarginNoteLayer, {
     decorations: (plugin) => plugin.decorations,
-  }
+  })
 );

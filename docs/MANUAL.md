@@ -74,13 +74,14 @@ Com a forma de verso, **New stanza** abre uma estrofe (linha em branco e verso n
 Clique com o botão direito na nota. No submenu **Insert** (**Inserir**), uma seção reúne:
 
 - **Insert dialogue dash** — travessão de fala.
-- **Insert hyphen** — hífen de palavra composta, sem virar travessão.
+- **Insert margin note** — comentário privado na margem. Na edição, o código `%%? … %%` fica oculto e só aparece com o cursor em cima, como o endereço de um link. Não entra na saída.
 - **Insert quotes** — aspas no trecho selecionado, ou um par vazio com o cursor no meio.
 - **Insert missing word** — um `TK` pesquisável no lugar da palavra que ainda não veio.
 
 Os comandos continuam na paleta:
 
-- **Insert margin note** — comentário privado na margem. Não entra na saída. **List margin notes** e **Show private comments** reúnem esses comentários.
+- **Insert hyphen** — hífen de palavra composta, sem virar travessão.
+- **List margin notes** e **Show private comments** reúnem os comentários privados.
 - **Read aloud** lê a nota, com pausa de parágrafo e, no poema, de verso e de estrofe. **Stop reading** interrompe.
 - **Open beside this page** abre a pesquisa, a ficha ou outra versão ao lado.
 - **Restore recovered page** devolve o último estado se o aplicativo fechou no meio da escrita. O manuscrito fica no aparelho. A sincronização, se existir, espera a rede.

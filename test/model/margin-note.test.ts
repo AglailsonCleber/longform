@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   cursorInsideMarginNote,
+  marginNoteRevealed,
   discountCountedLabel,
   lineForMarginNote,
   marginNoteEdit,
@@ -17,6 +18,30 @@ describe("margin notes in a line", () => {
       { text: "ela já sabia?", from: 10, to: 30 },
     ]);
     expect(marginNotesInLine("Ela saiu. %% comentário %%")).toEqual([]);
+  });
+});
+
+describe("margin note source", () => {
+  it("stays hidden until the cursor or selection touches it", () => {
+    const note = marginNotesInLine("Ela saiu. %%? ela já sabia? %%")[0];
+    expect(marginNoteRevealed(note.from, note.to, [{ from: 0, to: 0 }])).toBe(
+      false
+    );
+    expect(
+      marginNoteRevealed(note.from, note.to, [{ from: note.from + 4, to: note.from + 4 }])
+    ).toBe(true);
+    expect(
+      marginNoteRevealed(note.from, note.to, [{ from: note.from, to: note.from }])
+    ).toBe(false);
+    expect(
+      marginNoteRevealed(note.from, note.to, [{ from: note.to, to: note.to }])
+    ).toBe(false);
+    expect(
+      marginNoteRevealed(note.from, note.to, [{ from: note.to + 1, to: note.to + 1 }])
+    ).toBe(false);
+    expect(
+      marginNoteRevealed(note.from, note.to, [{ from: 0, to: note.from + 1 }])
+    ).toBe(true);
   });
 });
 

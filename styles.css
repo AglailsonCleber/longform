@@ -221,8 +221,13 @@
   border-radius: 0.2em;
 }
 
-.longform-leaf .longform-margin-syntax {
-  font-size: 0;
+.longform-leaf .longform-margin-anchor {
+  display: inline-block;
+  width: 0.45em;
+  height: 0.9em;
+  vertical-align: text-bottom;
+  border-bottom: 1px dotted var(--text-faint);
+  cursor: text;
 }
 
 .longform-margin-layer {
